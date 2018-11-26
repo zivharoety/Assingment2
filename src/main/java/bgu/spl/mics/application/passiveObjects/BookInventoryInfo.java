@@ -48,12 +48,7 @@ public class BookInventoryInfo {
 		return 0;
 	}
 
-	@/**
-	 * Retrieves the quantity for  book in the inventory.
-	 * <p>
-	 * @return the quantity of the book in the inventory.
-	 */
-	public int getQuantity(String Title) {
-		return -1;
+	public void reduceAmount(){
+	amountInInventory = amountInInventory -1;
 	}
 }

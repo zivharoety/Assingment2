@@ -19,15 +19,15 @@ public class FutureTest {
 
     @Test
     public void get() {
-        assertNull(test);
+        assertNull(test.get());
         test.resolve("let's perform a test");
-        assertEquals(test.get(),"let's perform a test");
+        assertEquals("let's perform a test", test.get());
     }
 
     @Test
     public void resolve() {
         test.resolve("test check");
-        assertEquals(test.get(),"test check");
+        assertEquals("test check",test.get());
         test.resolve(null);
         assertNull(test.get());
     }
@@ -47,7 +47,7 @@ public class FutureTest {
         assertNull(test.get(0,TimeUnit.MICROSECONDS));
         assertNull(test.get(500,TimeUnit.MICROSECONDS));
         test.resolve("I love Guy Ofeck");
-        assertEquals(test.get(500,TimeUnit.MICROSECONDS),"I love Guy Ofeck");
+        assertEquals("I love Guy Ofeck",test.get(500,TimeUnit.MICROSECONDS));
     }
 
     @After
