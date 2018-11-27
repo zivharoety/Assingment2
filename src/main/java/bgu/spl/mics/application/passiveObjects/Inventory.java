@@ -1,4 +1,3 @@
-
 package main.java.bgu.spl.mics.application.passiveObjects;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -86,5 +85,6 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
+		//TODO: Implement this
 	}
 }
