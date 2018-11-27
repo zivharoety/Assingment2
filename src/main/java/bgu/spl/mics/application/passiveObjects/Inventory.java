@@ -1,7 +1,10 @@
+
 package main.java.bgu.spl.mics.application.passiveObjects;
-
-
-
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import static main.java.bgu.spl.mics.application.passiveObjects.OrderResult.*;
 /**
  * Passive data-object representing the store inventory.
  * It holds a collection of {@link BookInventoryInfo} for all the
@@ -13,13 +16,22 @@ package main.java.bgu.spl.mics.application.passiveObjects;
  * You can add ONLY private fields and methods to this class as you see fit.
  */
 public class Inventory {
+		private static Inventory instance = null;
+		private Map<String,BookInventoryInfo> map;
+
+
+		private Inventory(){
+				map = new ConcurrentHashMap<>();
+		}
 
 	/**
      * Retrieves the single instance of this class.
      */
 	public static Inventory getInstance() {
-		//TODO: Implement this
-		return null;
+		if(instance == null) {
+			instance = new Inventory();
+		}
+		return instance;
 	}
 	
 	/**
@@ -30,8 +42,10 @@ public class Inventory {
      * 						of the inventory.
      */
 	public void load (BookInventoryInfo[ ] inventory ) {
-		
-	}
+		for(BookInventoryInfo b : inventory){
+			map.put(b.getBookTitle(),b);
+		}
+	} // initializting once, no need to synchronize
 	
 	/**
      * Attempts to take one book from the store.
@@ -42,12 +56,15 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
-		
-		return null;
+		if(map.get(book) == null || checkAvailabiltyAndGetPrice(book) == -1){
+			return NOT_IN_STOCK;
+		} // checking whether it is in stock
+		map.get(book).reduceAmount(); // reducing amount
+
+		return SUCCESSFULLY_TAKEN;
 	}
 	
-	
-	
+
 	/**
      * Checks if a certain book is available in the inventory.
      * <p>
@@ -55,8 +72,9 @@ public class Inventory {
      * @return the price of the book if it is available, -1 otherwise.
      */
 	public int checkAvailabiltyAndGetPrice(String book) {
-		//TODO: Implement this
-		return -1;
+		if(map.get(book) == null || map.get(book).getAmountInInventory() == 0)
+			return -1;
+		return map.get(book).getPrice();
 	}
 	
 	/**
@@ -68,6 +86,5 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
-		//TODO: Implement this
 	}
 }

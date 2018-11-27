@@ -1,5 +1,6 @@
 package main.java.bgu.spl.mics;
 
+import main.java.bgu.spl.mics.application.services.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +11,23 @@ import static org.junit.Assert.*;
 
 public class MessageBusTest {
     private MessageBusImpl Bustest ;
-    private MicroService microTest1;
+    private MicroService serviceTest1;
+    private MicroService apiTest1;
+    private MicroService inventoryTest1;
+    private MicroService logisticTest1;
+    private MicroService timeTest1;
+    private MicroService resourceTest1;
 
     @Before
     public void setUp() throws Exception {
         Bustest = new MessageBusImpl();
+        serviceTest1 = new SellingService();
+        apiTest1 = new APIService();
+        inventoryTest1 = new InventoryService();
+        logisticTest1 = new LogisticsService();
+        timeTest1 = new TimeService();
+        resourceTest1 = new ResourceService();
+
 
     }
 
@@ -42,7 +55,9 @@ public class MessageBusTest {
 
     @Test
     public void register() {
-        Bustest.register(microTest1);
+        Bustest.register(serviceTest1);
+        Bustest.register(apiTest1);
+        Bustest.register(inventoryTest1);
 
 
     }
