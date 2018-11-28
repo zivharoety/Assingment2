@@ -1,8 +1,9 @@
-package main.java.bgu.spl.mics.example;
+package bgu.spl.mics.example;
 
 import bgu.spl.mics.example.services.ExampleBroadcastListenerService;
-import bgu.spl.mics.example.services.ExampleMessageSenderService;
 import bgu.spl.mics.example.services.ExampleEventHandlerService;
+import bgu.spl.mics.example.services.ExampleMessageSenderService;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 public class ExampleManager {
 
     public static void main(String[] args) {
-        Map<String, ServiceCreator> serviceCreators = new HashMap<>();
+        Map<String, bgu.spl.mics.example.ServiceCreator> serviceCreators = new HashMap<>();
         serviceCreators.put("ev-handler", ExampleEventHandlerService::new);
         serviceCreators.put("brod-listener", ExampleBroadcastListenerService::new);
         serviceCreators.put("sender", ExampleMessageSenderService::new);
