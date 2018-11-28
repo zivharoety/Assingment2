@@ -1,4 +1,12 @@
-package main.java.bgu.spl.mics;
+package bgu.spl.mics;
+
+import bgu.spl.mics.application.passiveObjects.RoundedQueue;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Queue;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -6,12 +14,14 @@ package main.java.bgu.spl.mics;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+	private HashMap<Event,Future> futureMap;
+	private ConcurrentHashMap<Class<? extends Event> , RoundedQueue> microMap ; //to implement RoundedQueue!!!
+
 
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		// TODO Auto-generated method stub
-
+		//adding m to MicroMap & providing the lambada and calling the function m.subscribeEvent.
 	}
 
 	@Override
