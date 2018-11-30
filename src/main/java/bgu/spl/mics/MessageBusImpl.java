@@ -1,4 +1,7 @@
-package main.java.bgu.spl.mics;
+package bgu.spl.mics;
+import java.util.*;
+import java.util.concurrent.*;
+
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -6,42 +9,88 @@ package main.java.bgu.spl.mics;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+    private ConcurrentHashMap<Event, Future> futureMap;
+    private ConcurrentHashMap<Class<? extends Event>, LinkedList> eventTypeQueue;//to implement RoundedQueue!!!
+    private ConcurrentHashMap<MicroService, BlockingDeque<Message>> microQueue;
+    private ConcurrentHashMap<Class<? extends Broadcast>, LinkedList<MicroService>> broadcastTypeList;
 
 
-	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		// TODO Auto-generated method stub
+    @Override
+    public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+        //adding m to MicroMap & providing the lambada and calling the function m.subscribeEvent.
+        synchronized (eventTypeQueue) {
+            if (!eventTypeQueue.contains(type))
+                eventTypeQueue.put(type, new LinkedList());
+        }
+         synchronized (eventTypeQueue.get(type)){
+        eventTypeQueue.get(type).addLast(m);
+    }
 
-	}
+}
+
+
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		// TODO Auto-generated method stub
+        if(!broadcastTypeList.contains(type)) {
+            synchronized (broadcastTypeList) {
+                broadcastTypeList.put(type, new LinkedList());
+            }
+        }
+        broadcastTypeList.get(type).addFirst(m);
 
-	}
+    }
+
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
-		// TODO Auto-generated method stub
+		futureMap.get(e).resolve(result);
 
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		// TODO Auto-generated method stub
+		synchronized ((broadcastTypeList.get(b.getClass()))){
+		    for(MicroService m : broadcastTypeList.get(b.getClass())){
+		      try {
+                  microQueue.get(m).putFirst(b);
+              }
+              catch(InterruptedException ignored){
+		          //// to implement
+                  }
+            }
+        }
 
 	}
 
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		// TODO Auto-generated method stub
-		return null;
+		Future<T> toReturn = new Future<>();
+		futureMap.put(e,toReturn); // mapping the future to the event map
+		synchronized (eventTypeQueue.get(e.getClass())) {
+            MicroService temp;
+            temp = (MicroService) eventTypeQueue.get(e.getClass()).removeFirst();
+            try {
+                microQueue.get(temp).put(e);
+            }
+            catch (InterruptedException ignored){
+                /// to understand what we need to do
+            }
+
+            eventTypeQueue.get(e.getClass()).addLast(temp);
+
+        }
+		return toReturn;
 	}
 
 	@Override
 	public void register(MicroService m) {
-		// TODO Auto-generated method stub
+        BlockingDeque<Message> toAdd = new LinkedBlockingDeque<>();
+        microQueue.put(m,toAdd);
+
+
+	    // we think it's done
 
 	}
 
@@ -53,8 +102,8 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return microQueue.get(m).take() ;
+
 	}
 
 	

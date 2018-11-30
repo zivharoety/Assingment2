@@ -1,4 +1,4 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 
 /**
  * Passive data-object representing a receipt that should 

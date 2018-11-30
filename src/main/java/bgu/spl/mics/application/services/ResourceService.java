@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.application.services;
+package bgu.spl.mics.application.services;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.MicroService;
 
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.

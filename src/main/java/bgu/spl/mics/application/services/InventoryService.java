@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.application.services;
+package bgu.spl.mics.application.services;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.MicroService;
 
 /**
  * InventoryService is in charge of the book inventory and stock.

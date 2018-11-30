@@ -1,4 +1,4 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 
 /**
  * Passive data-object representing a information about a certain book in the inventory.
@@ -49,6 +49,6 @@ public class BookInventoryInfo {
 	}
 
 	public void reduceAmount(){
-	amountInInventory = amountInInventory -1;
+		amountInInventory = amountInInventory -1;
 	}
 }

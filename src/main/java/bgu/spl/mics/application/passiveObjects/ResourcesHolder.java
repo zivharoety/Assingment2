@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 
-import main.java.bgu.spl.mics.Future;
+import bgu.spl.mics.Future;
 
 /**
  * Passive object representing the resource manager.

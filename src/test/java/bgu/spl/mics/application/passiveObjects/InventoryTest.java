@@ -1,12 +1,11 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import bgu.spl.mics.application.passiveObjects.OrderResult.*;
 
-import static main.java.bgu.spl.mics.application.passiveObjects.OrderResult.*;
 import static org.junit.Assert.*;
-
 
 
 public class InventoryTest {
@@ -43,13 +42,13 @@ public class InventoryTest {
 
     @Test
     public void take() {
-        assertEquals(NOT_IN_STOCK,test.take("Game Of Thrones"));
-        assertEquals(NOT_IN_STOCK,test.take("Matrix "+0));
+        assertEquals(OrderResult.NOT_IN_STOCK,test.take("Game Of Thrones"));
+        assertEquals(OrderResult.NOT_IN_STOCK,test.take("Matrix "+0));
         for(int i=1 ; i<toLoad.length;i++){
             for(int j=0 ; j<i ; j++) {
-                assertEquals(SUCCESSFULLY_TAKEN,test.take("Matrix "+i));
+                assertEquals(OrderResult.SUCCESSFULLY_TAKEN,test.take("Matrix "+i));
             }
-            assertEquals(NOT_IN_STOCK,test.take("Matrix "+i));
+            assertEquals(OrderResult.NOT_IN_STOCK,test.take("Matrix "+i));
 
         }
     }

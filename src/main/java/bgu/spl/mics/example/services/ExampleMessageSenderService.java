@@ -1,9 +1,9 @@
-package main.java.bgu.spl.mics.example.services;
+package bgu.spl.mics.example.services;
 
 import java.util.concurrent.TimeUnit;
 
-import main.java.bgu.spl.mics.Future;
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.Future;
+import bgu.spl.mics.MicroService;
 import bgu.spl.mics.example.messages.ExampleBroadcast;
 import bgu.spl.mics.example.messages.ExampleEvent;
 

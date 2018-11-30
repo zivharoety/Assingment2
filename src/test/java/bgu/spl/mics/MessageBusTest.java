@@ -1,6 +1,8 @@
-package main.java.bgu.spl.mics;
+package bgu.spl.mics;
 
-import main.java.bgu.spl.mics.application.services.*;
+import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.services.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

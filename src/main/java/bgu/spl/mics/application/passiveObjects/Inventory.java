@@ -1,9 +1,9 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import static main.java.bgu.spl.mics.application.passiveObjects.OrderResult.*;
+import static bgu.spl.mics.application.passiveObjects.OrderResult.*;
 /**
  * Passive data-object representing the store inventory.
  * It holds a collection of {@link BookInventoryInfo} for all the

@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.example.messages;
+package bgu.spl.mics.example.messages;
 
-import main.java.bgu.spl.mics.Broadcast;
+import bgu.spl.mics.Broadcast;
 
 public class ExampleBroadcast implements Broadcast {
 
