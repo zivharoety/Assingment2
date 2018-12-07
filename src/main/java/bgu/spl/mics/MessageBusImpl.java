@@ -96,7 +96,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
-		// TODO Auto-generated method stub
+		// searching for each MessageClass that the micro service is subscribed to and remove it. need to add field that saves the subscribed Event\ brodcast
 
 	}
 

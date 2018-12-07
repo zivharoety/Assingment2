@@ -21,12 +21,12 @@ import java.util.HashMap;
  * <p>
  */
 public abstract class MicroService implements Runnable {
-    private MessageBus bus;
+    protected MessageBus bus;
     private boolean terminated = false;
     private final String name;
     private Future myFuture;
     private HashMap<Class<? extends Message>,Callback> myCallback ;
-    private Message toDo;
+    protected Message toDo;
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)

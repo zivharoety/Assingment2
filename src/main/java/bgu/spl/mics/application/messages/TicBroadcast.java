@@ -12,4 +12,5 @@ public class TicBroadcast implements Broadcast {
     public int getTic() {
         return Tic;
     }
+    
 }
