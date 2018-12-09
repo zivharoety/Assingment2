@@ -1,6 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.LinkedList;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Passive object representing the store finance management. 
@@ -12,13 +16,24 @@ package bgu.spl.mics.application.passiveObjects;
  * You can add ONLY private fields and methods to this class as you see fit.
  */
 public class MoneyRegister {
-	
+	AtomicInteger totalEarning;
+	LinkedList<OrderReceipt> recipts;
+	AtomicReference<LinkedList<OrderReceipt>> orders;
 	/**
      * Retrieves the single instance of this class.
      */
+	private MoneyRegister(){
+		totalEarning = new AtomicInteger(0);
+		recipts = new LinkedList<>();
+		orders = new AtomicReference<>();
+
+	}
+	private static class MoneyRegisterHolder {
+		private static MoneyRegister instance = new MoneyRegister();
+	}
 	public static MoneyRegister getInstance() {
 		//TODO: Implement this
-		return null;
+		return MoneyRegisterHolder.instance;
 	}
 	
 	/**
@@ -27,7 +42,9 @@ public class MoneyRegister {
      * @param r		The receipt to save in the money register.
      */
 	public void file (OrderReceipt r) {
-		//TODO: Implement this.
+			synchronized (recipts){
+				recipts.add(r);
+			}
 	}
 	
 	/**
@@ -35,7 +52,7 @@ public class MoneyRegister {
      */
 	public int getTotalEarnings() {
 		//TODO: Implement this
-		return 0;
+		return totalEarning.get();
 	}
 	
 	/**
@@ -44,7 +61,8 @@ public class MoneyRegister {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
-		// TODO Implement this
+				totalEarning.addAndGet(amount);
+				c.reduceCredit(amount);
 	}
 	
 	/**

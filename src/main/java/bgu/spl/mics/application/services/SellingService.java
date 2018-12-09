@@ -7,6 +7,7 @@ import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.CheckAvailabilityEvent;
 import bgu.spl.mics.application.messages.TakeBookEvent;
 import bgu.spl.mics.application.passiveObjects.*;
+import bgu.spl.mics.application.messages.Tick;
 
 /**
  * Selling service in charge of taking orders from customers.
@@ -22,37 +23,52 @@ public class SellingService extends MicroService{
 	private Future<Integer> futureAvailable;
 	private Future<OrderResult> futureIsTaken;
 	private MoneyRegister moneyRegister;
+	private int currTick;
 
 	public SellingService(String name) {
 		super(name);
+		currTick = 0;
+		moneyRegister = MoneyRegister.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
 		subscribeEvent(BookOrderEvent.class , (BookOrderEvent message)->{
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
-			TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
-			OrderReceipt receipt = new OrderReceipt();
 			futureAvailable = sendEvent(toCheck);
+			TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
+			OrderReceipt receipt = new OrderReceipt(message.getOrderId(),this.getName(),message.getCustomer().getId(),message.getBookName(),
+					message.getOrderTick(),currTick);
+			boolean gotKey = false;
 			if(futureAvailable.get() != -1){
-				synchronized (message.getCustomer()){
+				while(!gotKey) {
+					try {
+						message.getCustomer().getSem().acquire();
+						gotKey = true;
+					} catch (InterruptedException igrnored) {
+					}
+				}
+				if (message.getCustomer().getSem().tryAcquire()){
 					if(message.getCustomer().getAvailableCreditAmount() <= futureAvailable.get()){
 						futureIsTaken = sendEvent(toTake);
 						if(futureIsTaken.get() == OrderResult.SUCCESSFULLY_TAKEN){
 							moneyRegister.chargeCreditCard(message.getCustomer() , futureAvailable.get());
+							receipt.setPrice(futureAvailable.get());
+							receipt.setIssuedTick(currTick);
 							moneyRegister.file(receipt);
 							complete(message,receipt);
 						}
 					}
+					message.getCustomer().getSem().release();
 				}
 			}
 			complete(message , null);
 
 		});
+		subscribeBroadcast(Tick.class,(Tick message)->{
+			currTick = message.getTick();
+		});
 
 	}
 
-	public void setMoneyRegister(MoneyRegister moneyRegister) {
-		this.moneyRegister = moneyRegister;
-	}
 }

@@ -1,6 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import com.sun.tools.corba.se.idl.constExpr.Or;
+
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * Passive data-object representing a customer of the store.
@@ -9,13 +13,29 @@ import java.util.List;
  * You may add fields and methods to this class as you see fit (including public methods).
  */
 public class Customer {
-
+	private int id;
+	private String name;
+	private String address;
+	private int distance;
+	private int creditNumber;
+	private int creditAmount;
+	private LinkedList<OrderReceipt> myOrders;
+	private Semaphore sem;
 	/**
      * Retrieves the name of the customer.
      */
+	public Customer(int id,String name,String address,int distance,int creditNumber,int creditAmount){
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.distance = distance;
+		this.creditNumber = creditNumber;
+		this.creditAmount = creditAmount;
+		this.sem = new Semaphore(1);
+	}
 	public String getName() {
-		// TODO Implement this
-		return null;
+
+		return name;
 	}
 
 	/**
@@ -23,7 +43,7 @@ public class Customer {
      */
 	public int getId() {
 		// TODO Implement this
-		return 0;
+		return id;
 	}
 	
 	/**
@@ -31,7 +51,7 @@ public class Customer {
      */
 	public String getAddress() {
 		// TODO Implement this
-		return null;
+		return address;
 	}
 	
 	/**
@@ -39,7 +59,7 @@ public class Customer {
      */
 	public int getDistance() {
 		// TODO Implement this
-		return 0;
+		return distance;
 	}
 
 	
@@ -50,7 +70,7 @@ public class Customer {
      */
 	public List<OrderReceipt> getCustomerReceiptList() {
 		// TODO Implement this
-		return null;
+		return myOrders;
 	}
 	
 	/**
@@ -59,8 +79,8 @@ public class Customer {
      * @return Amount of money left.   
      */
 	public int getAvailableCreditAmount() {
-		// TODO Implement this
-		return 0;
+
+		return creditAmount;
 	}
 	
 	/**
@@ -68,7 +88,15 @@ public class Customer {
      */
 	public int getCreditNumber() {
 		// TODO Implement this
-		return 0;
+		return creditNumber;
 	}
-	
+
+
+	public Semaphore getSem() {
+		return sem;
+	}
+
+	public void reduceCredit(int amount){
+		creditAmount = creditAmount - amount;
+	}
 }

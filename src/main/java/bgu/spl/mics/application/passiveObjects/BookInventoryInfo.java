@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import java.util.concurrent.Semaphore;
+
 /**
  * Passive data-object representing a information about a certain book in the inventory.
  * You must not alter any of the given public methods of this class. 
@@ -10,12 +12,14 @@ public class BookInventoryInfo {
 	private String bookTitle;
 	private int price;
 	private int amountInInventory;
+	private Semaphore sem;
 
 
 	public BookInventoryInfo (String bookTitle ,int price, int amountInInventory){
 		this.bookTitle=bookTitle;
 		this.price=price;
 		this.amountInInventory=amountInInventory;
+		sem = new Semaphore(amountInInventory);
 	}
 
 	/**
@@ -24,8 +28,7 @@ public class BookInventoryInfo {
      * @return The title of this book.   
      */
 	public String getBookTitle() {
-		// TODO Implement this
-		return null;
+		return bookTitle;
 	}
 
 	/**
@@ -34,8 +37,7 @@ public class BookInventoryInfo {
      * @return amount of available books.      
      */
 	public int getAmountInInventory() {
-		// TODO Implement this
-		return 0;
+		return amountInInventory;
 	}
 
 	/**
@@ -44,11 +46,14 @@ public class BookInventoryInfo {
      * @return the price of the book.
      */
 	public int getPrice() {
-		// TODO Implement this
-		return 0;
+		return price;
 	}
 
 	public void reduceAmount(){
-		amountInInventory = amountInInventory -1;
+		amountInInventory -= amountInInventory;
+	}
+
+	public Semaphore getSem() {
+		return sem;
 	}
 }

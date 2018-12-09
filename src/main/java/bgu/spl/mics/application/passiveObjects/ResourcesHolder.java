@@ -2,6 +2,8 @@ package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.Future;
 
+import java.util.concurrent.*;
+
 /**
  * Passive object representing the resource manager.
  * You must not alter any of the given public methods of this class.
@@ -12,13 +14,24 @@ import bgu.spl.mics.Future;
  * You can add ONLY private methods and fields to this class.
  */
 public class ResourcesHolder {
+	private BlockingQueue<DeliveryVehicle> availableVehicle;
+	private Semaphore sema;
+	private ConcurrentLinkedQueue<Future<DeliveryVehicle>> waitingQueue;
+
+	private static class ResourceHolderClass {
+		private static ResourcesHolder instance = new ResourcesHolder();
+	}
 	
 	/**
      * Retrieves the single instance of this class.
      */
 	public static ResourcesHolder getInstance() {
-		//TODO: Implement this
-		return null;
+		return ResourceHolderClass.instance;
+	}
+
+	private ResourcesHolder(){
+		availableVehicle = new LinkedBlockingQueue<>();
+		waitingQueue = new ConcurrentLinkedQueue<>();
 	}
 	
 	/**
@@ -29,8 +42,14 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		//TODO: Implement this
-		return null;
+		Future<DeliveryVehicle> toReturn = new Future();
+		if(!sema.tryAcquire()){
+			waitingQueue.add(toReturn);
+		}
+		else {
+			toReturn.resolve(availableVehicle.poll());
+		}
+		return toReturn;
 	}
 	
 	/**
@@ -40,7 +59,12 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		//TODO: Implement this
+		if(waitingQueue.size()>0){
+			waitingQueue.poll().resolve(vehicle);
+		}
+		else{
+			sema.release();
+		}
 	}
 	
 	/**
@@ -49,7 +73,13 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
-		//TODO: Implement this
+		sema = new Semaphore(vehicles.length);
+		for(int i = 0; i < vehicles.length;i++) {
+			try {
+				availableVehicle.put(vehicles[i]);
+			} catch (InterruptedException igrnoerd) {
+			}
+		}
 	}
 
 }

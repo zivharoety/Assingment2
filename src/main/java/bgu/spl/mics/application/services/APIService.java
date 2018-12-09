@@ -4,7 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.BookOrderEvent;
-import bgu.spl.mics.application.messages.TicBroadcast;
+import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.Pair;
 // import jdk.incubator.http.internal.common.Pair;
@@ -25,19 +25,22 @@ public class APIService extends MicroService{
 	private LinkedList<Pair> orderSchedule;
 	private Customer myCustomer;
 	private Future<OrderReceipt> futureOrder;
+	private int orderId;
 
 	public APIService(String name) {
 		super(name);
+		orderId = 0;
 	}
 
 
 
 	@Override
 	protected void initialize() {
-		subscribeBroadcast(TicBroadcast.class , (TicBroadcast message)->{
-			while ( message.getTic() == orderSchedule.getFirst().getSecond()){
+		subscribeBroadcast(Tick.class , (Tick message)->{
+			while ( message.getTick() == orderSchedule.getFirst().getSecond()){
 				Pair toOrder = orderSchedule.removeFirst();
-				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond());
+				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond(),orderId);
+				orderId++;
 				futureOrder = sendEvent(order);
 				if(futureOrder.get() != null){
 					DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
