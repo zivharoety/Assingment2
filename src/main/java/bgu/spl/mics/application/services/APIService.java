@@ -6,11 +6,11 @@ import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.TicBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
-import com.sun.jdi.IntegerValue;
-import javafx.util.Pair;
-
+import bgu.spl.mics.Pair;
+// import jdk.incubator.http.internal.common.Pair;
 import java.util.LinkedList;
-import java.util.List;
+
+
 
 /**
  * APIService is in charge of the connection between a client and the store.
@@ -22,7 +22,7 @@ import java.util.List;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class APIService extends MicroService{
-	private LinkedList<Pair<String,Integer>> orderSchedule;
+	private LinkedList<Pair> orderSchedule;
 	private Customer myCustomer;
 	private Future<OrderReceipt> futureOrder;
 
@@ -35,9 +35,9 @@ public class APIService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeBroadcast(TicBroadcast.class , (TicBroadcast message)->{
-			while ( message.getTic() == orderSchedule.getFirst().getValue().intValue()){
-				Pair<String,Integer> toOrder = orderSchedule.removeFirst();
-				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getKey(),toOrder.getValue().intValue());
+			while ( message.getTic() == orderSchedule.getFirst().getSecond()){
+				Pair toOrder = orderSchedule.removeFirst();
+				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond());
 				futureOrder = sendEvent(order);
 				if(futureOrder.get() != null){
 					DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
@@ -47,11 +47,11 @@ public class APIService extends MicroService{
 		});
 	}
 
-	public LinkedList<Pair<String,Integer>> getOrderSchedule(){
+	public LinkedList<Pair> getOrderSchedule(){
 		return orderSchedule;
 	}
 
-	public void setOrderSchedule(LinkedList<Pair<String,Integer>> orderSchedule) {
+	public void setOrderSchedule(LinkedList<Pair> orderSchedule) {
 		this.orderSchedule = orderSchedule;
 	}
 
