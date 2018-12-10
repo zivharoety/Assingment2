@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.example.services;
+package bgu.spl.mics.example.services;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.MicroService;
 import bgu.spl.mics.example.messages.ExampleBroadcast;
 
 public class ExampleBroadcastListenerService extends MicroService {

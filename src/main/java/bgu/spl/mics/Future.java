@@ -1,4 +1,4 @@
-package main.java.bgu.spl.mics;
+package bgu.spl.mics;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,12 +16,14 @@ import java.util.concurrent.TimeUnit;
 */
 
 public class Future<T> {
-	
+		T val;
+		boolean done;
 	/**
 	 * This should be the the only public constructor in this class.
 	 */
 	public Future() {
-		//TODO: implement this
+		val = null;
+		done = false;
 	}
 	
 	/**
@@ -36,9 +38,13 @@ public class Future<T> {
      */
 
 
-	public T get() {
-		//TODO: implement this.
-		return null;
+	public synchronized T get() {
+		while (!done){
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
+		return val;
 	}
 	
 	/**
@@ -46,8 +52,10 @@ public class Future<T> {
 	 * @PRE : isDone() == false.
 	 * @POST : get is not blocking & isDone == true.
      */
-	public void resolve (T result) {
-		//TODO: implement this.
+	public synchronized void resolve (T result) {
+		val = result ;
+		done = true;
+		notifyAll();
 	}
 	
 	/**
@@ -56,8 +64,7 @@ public class Future<T> {
 	 * @POST : none
      */
 	public boolean isDone() {
-		//TODO: implement this.
-		return false;
+		return done;
 	}
 	
 	/**
@@ -68,15 +75,22 @@ public class Future<T> {
 	 * @PRE : none.
 	 * @POST : trivial.\
 	 *
-     * @param timout 	the maximal amount of time units to wait for the result.
+     * @param timeout 	the maximal amount of time units to wait for the result.
      * @param unit		the {@link TimeUnit} time units to wait.
      * @return return the result of type T if it is available, if not, 
      * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
      *         elapsed, return null.
      */
-	public T get(long timeout, TimeUnit unit) {
-		//TODO: implement this.
-		return null;
+	public synchronized T get(long timeout, TimeUnit unit) {
+		if(isDone()){
+			return val;
+		}
+		try {
+
+			wait(unit.convert(timeout,unit));//wait(timeout);
+			//to check how to implement
+		} catch (InterruptedException e) {}
+		return val;
 	}
 
 }

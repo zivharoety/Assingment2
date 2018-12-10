@@ -1,6 +1,8 @@
-package main.java.bgu.spl.mics;
+package bgu.spl.mics;
 
-import main.java.bgu.spl.mics.application.services.*;
+import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.services.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +22,13 @@ public class MessageBusTest {
 
     @Before
     public void setUp() throws Exception {
-        Bustest = new MessageBusImpl();
-        serviceTest1 = new SellingService();
-        apiTest1 = new APIService();
-        inventoryTest1 = new InventoryService();
-        logisticTest1 = new LogisticsService();
-        timeTest1 = new TimeService();
-        resourceTest1 = new ResourceService();
+        //Bustest = new MessageBusImpl();
+     //   serviceTest1 = new SellingService();
+       // apiTest1 = new APIService();
+    //    inventoryTest1 = new InventoryService();
+      //  logisticTest1 = new LogisticsService();
+        //timeTest1 = new TimeService();
+        //resourceTest1 = new ResourceService();
 
 
     }

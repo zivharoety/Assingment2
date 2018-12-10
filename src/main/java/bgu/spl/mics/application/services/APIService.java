@@ -1,6 +1,16 @@
-package main.java.bgu.spl.mics.application.services;
+package bgu.spl.mics.application.services;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.Future;
+import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.DeliveryEvent;
+import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.messages.Tick;
+import bgu.spl.mics.application.passiveObjects.*;
+import bgu.spl.mics.Pair;
+// import jdk.incubator.http.internal.common.Pair;
+import java.util.LinkedList;
+
+
 
 /**
  * APIService is in charge of the connection between a client and the store.
@@ -12,16 +22,47 @@ import main.java.bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class APIService extends MicroService{
+	private LinkedList<Pair> orderSchedule;
+	private Customer myCustomer;
+	private Future<OrderReceipt> futureOrder;
+	private int orderId;
 
-	public APIService() {
-		super("Change_This_Name");
-		// TODO Implement this
+	public APIService(String name) {
+		super(name);
+		orderId = 0;
 	}
+
+
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
-		
+		subscribeBroadcast(Tick.class , (Tick message)->{
+			while ( message.getTick() == orderSchedule.getFirst().getSecond()){
+				Pair toOrder = orderSchedule.removeFirst();
+				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond(),orderId);
+				orderId++;
+				futureOrder = sendEvent(order);
+				if(futureOrder.get() != null){
+					DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
+					sendEvent(deliveryEvent);
+				}
+			}
+		});
 	}
 
+	public LinkedList<Pair> getOrderSchedule(){
+		return orderSchedule;
+	}
+
+	public void setOrderSchedule(LinkedList<Pair> orderSchedule) {
+		this.orderSchedule = orderSchedule;
+	}
+
+	public Customer getMyCustomer() {
+		return myCustomer;
+	}
+
+	public void setMyCustomer(Customer myCustomer) {
+		this.myCustomer = myCustomer;
+	}
 }

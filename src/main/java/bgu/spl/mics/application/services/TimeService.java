@@ -1,6 +1,10 @@
-package main.java.bgu.spl.mics.application.services;
+package bgu.spl.mics.application.services;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.MessageBus;
+import bgu.spl.mics.MessageBusImpl;
+import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.passiveObjects.*;
+import bgu.spl.mics.application.messages.Tick;
 
 /**
  * TimeService is the global system timer There is only one instance of this micro-service.
@@ -13,16 +17,27 @@ import main.java.bgu.spl.mics.MicroService;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class TimeService extends MicroService{
+	private int duration;
+	private int speed;
 
-	public TimeService() {
-		super("Change_This_Name");
-		// TODO Implement this
+	public TimeService(int speed, int duration) {
+		super("time");
+		super.bus = MessageBusImpl.getInstance();
+		this.duration = duration;
+		this.speed = speed;
+
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
+		for(int i=1 ; i <= duration ; i++){
+			sendBroadcast(new Tick(i));
+			try {
+				Thread.sleep(speed);
+			}
+			catch(InterruptedException ignored){}
+		}
+		terminate();
 		
 	}
-
 }

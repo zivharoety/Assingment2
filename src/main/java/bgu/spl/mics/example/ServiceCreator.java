@@ -1,6 +1,6 @@
-package main.java.bgu.spl.mics.example;
+package bgu.spl.mics.example;
 
-import main.java.bgu.spl.mics.MicroService;
+import bgu.spl.mics.MicroService;
 
 public interface ServiceCreator {
     MicroService create(String name, String[] args);

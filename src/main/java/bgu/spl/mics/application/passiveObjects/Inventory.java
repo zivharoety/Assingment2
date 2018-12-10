@@ -1,9 +1,12 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application.passiveObjects;
+import bgu.spl.mics.MessageBusImpl;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import static main.java.bgu.spl.mics.application.passiveObjects.OrderResult.*;
+import static bgu.spl.mics.application.passiveObjects.OrderResult.*;
 /**
  * Passive data-object representing the store inventory.
  * It holds a collection of {@link BookInventoryInfo} for all the
@@ -15,23 +18,22 @@ import static main.java.bgu.spl.mics.application.passiveObjects.OrderResult.*;
  * You can add ONLY private fields and methods to this class as you see fit.
  */
 public class Inventory {
-		private static Inventory instance = null;
-		private Map<String,BookInventoryInfo> map;
-
+		public Map<String,BookInventoryInfo> map;
 
 		private Inventory(){
-				map = new ConcurrentHashMap<>();
+			map = new ConcurrentHashMap<>();
 		}
-
 	/**
      * Retrieves the single instance of this class.
      */
-	public static Inventory getInstance() {
-		if(instance == null) {
-			instance = new Inventory();
-		}
-		return instance;
+	private static class InventoryHolder {
+		private static Inventory instance = new Inventory();
 	}
+
+	public static Inventory getInstance() {
+		return InventoryHolder.instance;
+	}
+
 	
 	/**
      * Initializes the store inventory. This method adds all the items given to the store
@@ -55,14 +57,15 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
-		if(map.get(book) == null || checkAvailabiltyAndGetPrice(book) == -1){
+		if(map.get(book) == null)
 			return NOT_IN_STOCK;
-		} // checking whether it is in stock
-		map.get(book).reduceAmount(); // reducing amount
-
+		// checking whether it is in stock
+		if(!map.get(book).getSem().tryAcquire())
+			return NOT_IN_STOCK;
+		map.get(book).reduceAmount();// reducing amount
 		return SUCCESSFULLY_TAKEN;
 	}
-	
+
 
 	/**
      * Checks if a certain book is available in the inventory.
@@ -70,11 +73,12 @@ public class Inventory {
      * @param book 		Name of the book.
      * @return the price of the book if it is available, -1 otherwise.
      */
-	public int checkAvailabiltyAndGetPrice(String book) {
+	public int checkAvailabiltyAndGetPrice(String book){
 		if(map.get(book) == null || map.get(book).getAmountInInventory() == 0)
 			return -1;
 		return map.get(book).getPrice();
 	}
+
 	
 	/**
      * 
@@ -85,6 +89,18 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
-		//TODO: Implement this
+		try {
+			FileOutputStream toPrint = new FileOutputStream(new File(filename));
+			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
+			toWrite.writeObject(map);
+			toWrite.flush();//to check if really necessary.
+			toWrite.close();
+
+		} catch (FileNotFoundException ignord) {
+
+		} catch (IOException ignord) {
+
+		}
 	}
+
 }
