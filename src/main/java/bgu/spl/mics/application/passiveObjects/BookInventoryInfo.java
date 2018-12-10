@@ -11,15 +11,15 @@ import java.util.concurrent.Semaphore;
 public class BookInventoryInfo {
 	private String bookTitle;
 	private int price;
-	private int amountInInventory;
+	private int amount;
 	private Semaphore sem;
 
 
-	public BookInventoryInfo (String bookTitle ,int price, int amountInInventory){
+	public BookInventoryInfo (String bookTitle ,int price, int amount){
 		this.bookTitle=bookTitle;
 		this.price=price;
-		this.amountInInventory=amountInInventory;
-		sem = new Semaphore(amountInInventory);
+		this.amount=amount;
+		//this.sem = new Semaphore(amount);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class BookInventoryInfo {
      * @return amount of available books.      
      */
 	public int getAmountInInventory() {
-		return amountInInventory;
+		return amount;
 	}
 
 	/**
@@ -50,10 +50,14 @@ public class BookInventoryInfo {
 	}
 
 	public void reduceAmount(){
-		amountInInventory -= amountInInventory;
+		amount -= amount;
 	}
 
 	public Semaphore getSem() {
 		return sem;
+	}
+
+	public void setSemaphore(){
+		sem = new Semaphore(this.amount);
 	}
 }

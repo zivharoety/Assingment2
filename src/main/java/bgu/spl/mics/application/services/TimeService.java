@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.MessageBus;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.messages.Tick;
@@ -20,6 +22,7 @@ public class TimeService extends MicroService{
 
 	public TimeService(int speed, int duration) {
 		super("time");
+		super.bus = MessageBusImpl.getInstance();
 		this.duration = duration;
 		this.speed = speed;
 

@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.io.*;
 import java.util.LinkedList;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,6 +72,17 @@ public class MoneyRegister {
      * This method is called by the main method in order to generate the output.. 
      */
 	public void printOrderReceipts(String filename) {
-		//TODO: Implement this
+		try {
+			FileOutputStream toPrint = new FileOutputStream(new File(filename));
+			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
+			toWrite.writeObject(recipts);
+			toWrite.flush();//to check if really necessary.
+			toWrite.close();
+
+		} catch (FileNotFoundException ignord) {
+
+		} catch (IOException ignord) {
+
+		}
 	}
 }

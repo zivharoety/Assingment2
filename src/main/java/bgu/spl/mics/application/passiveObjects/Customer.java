@@ -21,17 +21,19 @@ public class Customer {
 	private int creditAmount;
 	private LinkedList<OrderReceipt> myOrders;
 	private Semaphore sem;
+	private Order[] orderSchedule;
+	private creditCard creditCard;
 	/**
      * Retrieves the name of the customer.
      */
-	public Customer(int id,String name,String address,int distance,int creditNumber,int creditAmount){
+	public Customer(int id,String name,String address,int distance,creditCard creditCard,Order[] orderSchedule){
 		this.id = id;
 		this.name = name;
 		this.address = address;
 		this.distance = distance;
-		this.creditNumber = creditNumber;
-		this.creditAmount = creditAmount;
-		this.sem = new Semaphore(1);
+		this.creditCard = creditCard;
+		this.orderSchedule = orderSchedule;
+
 	}
 	public String getName() {
 
@@ -98,5 +100,11 @@ public class Customer {
 
 	public void reduceCredit(int amount){
 		creditAmount = creditAmount - amount;
+	}
+
+	public void setCustomer(){
+		this.sem = new Semaphore(1);
+		this.creditNumber = this.creditCard.getNumber();
+		this.creditAmount = this.creditCard.getAmount();
 	}
 }

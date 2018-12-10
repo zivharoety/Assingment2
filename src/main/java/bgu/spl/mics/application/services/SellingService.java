@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Event;
 import bgu.spl.mics.Future;
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.CheckAvailabilityEvent;
@@ -27,6 +28,7 @@ public class SellingService extends MicroService{
 
 	public SellingService(String name) {
 		super(name);
+		bus = MessageBusImpl.getInstance();
 		currTick = 0;
 		moneyRegister = MoneyRegister.getInstance();
 	}

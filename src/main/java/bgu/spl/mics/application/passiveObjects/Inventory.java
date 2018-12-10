@@ -1,7 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 import bgu.spl.mics.MessageBusImpl;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,8 +17,8 @@ import static bgu.spl.mics.application.passiveObjects.OrderResult.*;
  * <p>
  * You can add ONLY private fields and methods to this class as you see fit.
  */
-public class Inventory implements Serializable {
-		private Map<String,BookInventoryInfo> map;
+public class Inventory {
+		public Map<String,BookInventoryInfo> map;
 
 		private Inventory(){
 			map = new ConcurrentHashMap<>();
@@ -78,6 +78,7 @@ public class Inventory implements Serializable {
 			return -1;
 		return map.get(book).getPrice();
 	}
+
 	
 	/**
      * 
@@ -88,9 +89,18 @@ public class Inventory implements Serializable {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
+		try {
+			FileOutputStream toPrint = new FileOutputStream(new File(filename));
+			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
+			toWrite.writeObject(map);
+			toWrite.flush();//to check if really necessary.
+			toWrite.close();
 
+		} catch (FileNotFoundException ignord) {
 
-		//TODO: Implement this
+		} catch (IOException ignord) {
 
+		}
 	}
+
 }

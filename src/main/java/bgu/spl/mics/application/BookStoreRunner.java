@@ -3,9 +3,7 @@ package bgu.spl.mics.application;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 import bgu.spl.mics.application.passiveObjects.BookInventoryInfo;
 /*import org.json.simple.JSONArray;
@@ -15,11 +13,16 @@ import org.json.simple.parser.ParseException;*/
 import bgu.spl.mics.application.passiveObjects.Inventory;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 import com.google.gson.*;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 /** This is the Main class of the application. You should parse the input file, 
@@ -29,38 +32,31 @@ import java.io.InputStream;
 public class BookStoreRunner {
     public static void main(String[] args) {
      //   JSONParser parser = new JSONParser();
-        BookInventoryInfo[] inventoryInfo ;
+       // BookInventoryInfo[] inventoryInfo ;
         Gson gson= new Gson();
-        try {
-            JsonReader reader = new JsonReader(new FileReader("C:\\Users\\Ziv Haroety\\IdeaProjects\\Part2\\json.txt"));
-            JsonParser input = gson.fromJson(reader,JsonParser.class);
+       try {
+            JsonReader reader = new JsonReader(new FileReader("/Users/guyofeck/Documents/spl/Assingment2.rar/Assingment2/json.txt"));
+            JsonParser parser = gson.fromJson(reader,JsonParser.class);
             Inventory inventory = Inventory.getInstance();
-            inventory.load(input.initialInventory);
-       //     inventory.load(input.inventoryInfo);
+            parser.setSema();
+            inventory.load(parser.initialInventory);
             ResourcesHolder resourceHolder = ResourcesHolder.getInstance();
-//            resourceHolder.load(input.vehicles);
+            resourceHolder.load(parser.initialResources[0].vehicles);
+            parser.services.setCustomers();
+            parser.services.startProgram();
+
+            System.out.println(parser.initialResources[0].vehicles[0].getLicense());
+
+
+
 
         }
         catch(FileNotFoundException i){}
 
-        /*try{
-            Object obj = parser.parse(new FileReader("C:\\Users\\Ziv Haroety\\IdeaProjects\\Part2\\json.txt"));
-            JSONObject jasonObject = (JSONObject) obj;
-            JSONArray inventory = (JSONArray) jasonObject.get("initialInventory");
-            inventoryInfo = new BookInventoryInfo[inventory.size()];
-            Iterator iter = inventory.iterator();
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-*/
 
 
 
 
     }
+
 }
