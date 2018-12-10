@@ -27,8 +27,10 @@ public class APIService extends MicroService{
 	private Future<OrderReceipt> futureOrder;
 	private int orderId;
 
-	public APIService(String name) {
+	public APIService(String name, Customer c, LinkedList<Pair> list){
 		super(name);
+		this.myCustomer = c;
+		this.orderSchedule = list;
 		orderId = 0;
 	}
 
@@ -54,15 +56,9 @@ public class APIService extends MicroService{
 		return orderSchedule;
 	}
 
-	public void setOrderSchedule(LinkedList<Pair> orderSchedule) {
-		this.orderSchedule = orderSchedule;
-	}
-
 	public Customer getMyCustomer() {
 		return myCustomer;
 	}
 
-	public void setMyCustomer(Customer myCustomer) {
-		this.myCustomer = myCustomer;
-	}
+
 }

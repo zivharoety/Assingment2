@@ -28,6 +28,7 @@ public class SellingService extends MicroService{
 
 	public SellingService(String name) {
 		super(name);
+		bus = MessageBusImpl.getInstance();
 		currTick = 0;
 		moneyRegister = MoneyRegister.getInstance();
 	}

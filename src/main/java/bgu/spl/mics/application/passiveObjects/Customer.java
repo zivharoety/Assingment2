@@ -107,4 +107,9 @@ public class Customer {
 		this.creditNumber = this.creditCard.getNumber();
 		this.creditAmount = this.creditCard.getAmount();
 	}
+
+	public Order[] getOrderSchedule() {
+		return orderSchedule;
+	}
+
 }
