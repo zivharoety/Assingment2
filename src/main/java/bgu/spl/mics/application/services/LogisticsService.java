@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.FetchVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
+import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.messages.DeliveryEvent;
 
@@ -32,8 +33,11 @@ public class LogisticsService extends MicroService {
 			ReleaseVehicle toRelease = new ReleaseVehicle(future.get());
 			sendEvent(toRelease);
 		});
-		// TODO Implement this
-		
+		subscribeBroadcast(Tick.class , (Tick message)->{
+			if(message.getDuration()==message.getTick())
+				terminate();
+		});
+
 	}
 
 }

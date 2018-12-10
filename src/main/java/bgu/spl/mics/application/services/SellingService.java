@@ -68,6 +68,8 @@ public class SellingService extends MicroService{
 
 		});
 		subscribeBroadcast(Tick.class,(Tick message)->{
+			if(message.getTick()==message.getDuration())
+				terminate();
 			currTick = message.getTick();
 		});
 

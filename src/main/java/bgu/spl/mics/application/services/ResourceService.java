@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.FetchVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
+import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -30,7 +31,10 @@ public class ResourceService extends MicroService{
 		subscribeEvent(ReleaseVehicle.class, (ReleaseVehicle message)->{
 			resource.releaseVehicle(message.getVehicle());
 		});
-
+		subscribeBroadcast(Tick.class , (Tick message)->{
+			if(message.getDuration()==message.getTick())
+				terminate();
+		});
 		
 	}
 

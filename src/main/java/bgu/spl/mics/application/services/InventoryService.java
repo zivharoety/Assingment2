@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CheckAvailabilityEvent;
 import bgu.spl.mics.application.messages.TakeBookEvent;
+import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
 /**
  * InventoryService is in charge of the book inventory and stock.
@@ -30,6 +31,10 @@ public class InventoryService extends MicroService{
 		});
 		subscribeEvent(TakeBookEvent.class,(TakeBookEvent message)->{
 			complete(message,inventory.take(message.getBookName()));
+		});
+		subscribeBroadcast(Tick.class , (Tick message)->{
+			if(message.getDuration()==message.getTick())
+				terminate();
 		});
 		
 	}

@@ -15,14 +15,7 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 
 /** This is the Main class of the application. You should parse the input file, 
@@ -35,7 +28,7 @@ public class BookStoreRunner {
        // BookInventoryInfo[] inventoryInfo ;
         Gson gson= new Gson();
        try {
-            JsonReader reader = new JsonReader(new FileReader("/Users/guyofeck/Documents/spl/Assingment2.rar/Assingment2/json.txt"));
+            JsonReader reader = new JsonReader(new FileReader("C:\\Users\\Ziv Haroety\\Desktop\\ZIV\\Assingment2FORSURE\\json.txt"));
             JsonParser parser = gson.fromJson(reader,JsonParser.class);
             Inventory inventory = Inventory.getInstance();
             parser.setSema();
@@ -43,7 +36,7 @@ public class BookStoreRunner {
             ResourcesHolder resourceHolder = ResourcesHolder.getInstance();
             resourceHolder.load(parser.initialResources[0].vehicles);
             parser.services.setCustomers();
-            parser.services.startProgram();
+        //  parser.services.startProgram();
 
             System.out.println(parser.initialResources[0].vehicles[0].getLicense());
 
