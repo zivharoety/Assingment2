@@ -28,13 +28,13 @@ public class SellingService extends MicroService{
 
 	public SellingService(String name) {
 		super(name);
-		bus = MessageBusImpl.getInstance();
 		currTick = 0;
 		moneyRegister = MoneyRegister.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
+		System.out.println(getName()+" started running");
 		subscribeEvent(BookOrderEvent.class , (BookOrderEvent message)->{
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
 			futureAvailable = sendEvent(toCheck);
