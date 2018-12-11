@@ -1,7 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
 
-import com.sun.tools.corba.se.idl.constExpr.Or;
 
+import bgu.spl.mics.Pair;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -34,6 +37,24 @@ public class Customer {
 		this.creditCard = creditCard;
 		this.orderSchedule = orderSchedule;
 
+	}
+
+	public LinkedList<Pair> sortAndGetList(){
+		Comparator<Order> comp = new Comparator<Order>() {
+			@Override
+			public int compare(Order o1, Order o2) {
+				if(o1.tick>o2.tick)
+					return 1;
+				if(o1.tick<o2.tick)
+					return -1;
+				return 0;
+			}
+		};
+		Arrays.sort(orderSchedule , comp);
+		LinkedList<Pair> toReturn = new LinkedList<>();
+		for(int i=0;i<orderSchedule.length;i++)
+			toReturn.addLast(new Pair(orderSchedule[i].bookTitle,orderSchedule[i].tick));
+		return toReturn;
 	}
 	public String getName() {
 

@@ -39,6 +39,9 @@ public class APIService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeBroadcast(Tick.class , (Tick message)->{
+			if(message.getTick()==message.getDuration()){
+				terminate();
+			}
 			while ( message.getTick() == orderSchedule.getFirst().getSecond()){
 				Pair toOrder = orderSchedule.removeFirst();
 				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond(),orderId);
@@ -50,6 +53,7 @@ public class APIService extends MicroService{
 				}
 			}
 		});
+
 	}
 
 	public LinkedList<Pair> getOrderSchedule(){

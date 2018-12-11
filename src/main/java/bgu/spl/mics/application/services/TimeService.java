@@ -31,7 +31,7 @@ public class TimeService extends MicroService{
 	@Override
 	protected void initialize() {
 		for(int i=1 ; i <= duration ; i++){
-			sendBroadcast(new Tick(i));
+			sendBroadcast(new Tick(i,duration));
 			try {
 				Thread.sleep(speed);
 			}

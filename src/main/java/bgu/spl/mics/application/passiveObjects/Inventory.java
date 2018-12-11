@@ -17,6 +17,8 @@ import static bgu.spl.mics.application.passiveObjects.OrderResult.*;
  * <p>
  * You can add ONLY private fields and methods to this class as you see fit.
  */
+
+
 public class Inventory {
 		public Map<String,BookInventoryInfo> map;
 
