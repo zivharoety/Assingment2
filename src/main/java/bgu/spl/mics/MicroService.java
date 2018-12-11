@@ -2,6 +2,7 @@ package bgu.spl.mics;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -29,6 +30,7 @@ public abstract class MicroService implements Runnable {
     private HashMap<Class<? extends Message>,Callback> myCallback ;
     protected Message toDo;
     private boolean isRegister;
+
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
@@ -38,6 +40,7 @@ public abstract class MicroService implements Runnable {
         this.name = name;
         myCallback = new HashMap<>();
         isRegister = false;
+
     }
 
     /**

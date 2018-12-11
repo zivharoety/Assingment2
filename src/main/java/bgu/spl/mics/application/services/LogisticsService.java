@@ -8,6 +8,8 @@ import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.messages.DeliveryEvent;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Logistic service in charge of delivering books that have been purchased to customers.
  * Handles {@link DeliveryEvent}.
@@ -19,8 +21,10 @@ import bgu.spl.mics.application.messages.DeliveryEvent;
  */
 public class LogisticsService extends MicroService {
 			private Future<DeliveryVehicle> future;
-	public LogisticsService(String name) {
+			private CountDownLatch countDown;
+	public LogisticsService(String name, CountDownLatch countD) {
 		super(name);
+		countDown = countD;
 		// TODO Implement this
 	}
 
@@ -34,9 +38,13 @@ public class LogisticsService extends MicroService {
 			sendEvent(toRelease);
 		});
 		subscribeBroadcast(Tick.class , (Tick message)->{
-			if(message.getDuration()==message.getTick())
+			if(message.getDuration()==message.getTick()) {
+				bus.unregister(this);
 				terminate();
+				System.out.println(getName()+ "is terminating");
+			}
 		});
+		countDown.countDown();
 
 	}
 

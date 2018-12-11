@@ -9,7 +9,7 @@ import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.Pair;
 // import jdk.incubator.http.internal.common.Pair;
 import java.util.LinkedList;
-
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -26,12 +26,17 @@ public class APIService extends MicroService{
 	private Customer myCustomer;
 	private Future<OrderReceipt> futureOrder;
 	private int orderId;
+	private CountDownLatch countDown;
+	private LinkedList<Pair> currOrder;
+	private  boolean toBrake;
 
-	public APIService(String name, Customer c, LinkedList<Pair> list){
+	public APIService(String name, Customer c, LinkedList<Pair> list, CountDownLatch countD){
 		super(name);
 		this.myCustomer = c;
-		this.orderSchedule = list;
+		this.orderSchedule = c.sortAndGetList();
 		orderId = 0;
+		this.countDown = countD;
+		currOrder = new LinkedList<>();
 	}
 
 
@@ -40,19 +45,33 @@ public class APIService extends MicroService{
 	protected void initialize() {
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getTick()==message.getDuration()){
+				bus.unregister(this);
 				terminate();
+				System.out.println(getName()+ "is terminating");
 			}
-			while ( message.getTick() == orderSchedule.getFirst().getSecond()){
-				Pair toOrder = orderSchedule.removeFirst();
-				BookOrderEvent order = new BookOrderEvent(myCustomer , toOrder.getFirst(),toOrder.getSecond(),orderId);
-				orderId++;
-				futureOrder = sendEvent(order);
-				if(futureOrder.get() != null){
-					DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
-					sendEvent(deliveryEvent);
+			boolean toRun = true;
+			if(orderSchedule.size() > 0) {
+				while (toRun && message.getTick() == orderSchedule.getFirst().getSecond()) {
+					int curr = message.getTick();
+					for (Pair toOrder : orderSchedule) {
+						BookOrderEvent order = new BookOrderEvent(myCustomer, toOrder.getFirst(), toOrder.getSecond(), orderId);
+						orderId++;
+						futureOrder = sendEvent(order);
+						System.out.println(getName() + " sent Event" + order.getBookName());
+						if (futureOrder.get() != null) {
+							DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
+							sendEvent(deliveryEvent);
+						}
+						orderSchedule.removeFirst();
+						if (orderSchedule.size() == 0 || orderSchedule.getFirst().getSecond() != curr)
+							toRun =false;
+					}
+
+
 				}
 			}
 		});
+		countDown.countDown();
 
 	}
 

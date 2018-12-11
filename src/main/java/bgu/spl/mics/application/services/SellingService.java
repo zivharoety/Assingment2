@@ -10,6 +10,8 @@ import bgu.spl.mics.application.messages.TakeBookEvent;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.messages.Tick;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Selling service in charge of taking orders from customers.
  * Holds a reference to the {@link MoneyRegister} singleton of the store.
@@ -24,12 +26,14 @@ public class SellingService extends MicroService{
 	private Future<Integer> futureAvailable;
 	private Future<OrderResult> futureIsTaken;
 	private MoneyRegister moneyRegister;
+	private CountDownLatch countDown;
 	private int currTick;
 
-	public SellingService(String name) {
+	public SellingService(String name, CountDownLatch countD) {
 		super(name);
 		bus = MessageBusImpl.getInstance();
 		currTick = 0;
+		countDown = countD;
 		moneyRegister = MoneyRegister.getInstance();
 	}
 
@@ -37,6 +41,7 @@ public class SellingService extends MicroService{
 	protected void initialize() {
 		System.out.println(getName()+" started running");
 		subscribeEvent(BookOrderEvent.class , (BookOrderEvent message)->{
+			System.out.println(getName() + "got a Book Order Event");
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
 			futureAvailable = sendEvent(toCheck);
 			TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
@@ -69,10 +74,14 @@ public class SellingService extends MicroService{
 
 		});
 		subscribeBroadcast(Tick.class,(Tick message)->{
-			if(message.getTick()==message.getDuration())
+			if(message.getTick()==message.getDuration()) {
+				bus.unregister(this);
 				terminate();
+				System.out.println(getName()+ "is terminating");
+			}
 			currTick = message.getTick();
 		});
+		countDown.countDown();
 
 	}
 

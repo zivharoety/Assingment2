@@ -127,6 +127,7 @@ public class Customer {
 		this.sem = new Semaphore(1);
 		this.creditNumber = this.creditCard.getNumber();
 		this.creditAmount = this.creditCard.getAmount();
+
 	}
 
 	public Order[] getOrderSchedule() {

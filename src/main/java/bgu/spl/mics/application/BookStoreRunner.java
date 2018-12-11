@@ -15,7 +15,6 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,11 +30,10 @@ import java.nio.file.Paths;
  */
 public class BookStoreRunner {
     public static void main(String[] args) {
-     //   JSONParser parser = new JSONParser();
-       // BookInventoryInfo[] inventoryInfo ;
         Gson gson= new Gson();
+
        try {
-            JsonReader reader = new JsonReader(new FileReader("/Users/guyofeck/Documents/spl/Assingment2.rar/Assingment2/json.txt"));
+            JsonReader reader = new JsonReader(new FileReader("/users/studs/bsc/2019/haroetyz/IdeaProjects/Assingment2/json.txt"));
             JsonParser parser = gson.fromJson(reader,JsonParser.class);
             Inventory inventory = Inventory.getInstance();
             parser.setSema();
@@ -45,20 +43,9 @@ public class BookStoreRunner {
             parser.services.setCustomers();
             parser.services.startProgram();
 
-            System.out.println(parser.initialResources[0].vehicles[0].getLicense());
+
 
         } catch (FileNotFoundException i){}
-        System.out.println("hey");
-    /*
-        public void setUp(){
-
-
-
-        }
-        catch(FileNotFoundException i){}
-
-
-
 
 
     }

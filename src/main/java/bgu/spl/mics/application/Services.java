@@ -6,14 +6,16 @@ import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.services.*;
 
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 
 public class Services {
-    public TimeService time ;
+    public TimeInput time ;
     public int selling;
     public int inventoryService;
     public int logistics;
     public int resourcesService;
     public Customer[] customers;
+    private CountDownLatch countDown;
 
     public void setCustomers() {
         for (int i = 0; i < customers.length; i++) {
@@ -22,54 +24,59 @@ public class Services {
     }
 
     public void startProgram(){
+        countDown = new CountDownLatch(selling + customers.length+resourcesService+logistics+inventoryService);
         startSelling();
         startApi();
+        startInvetoryService();
+        startLogistics();
+        startResourceService();
+        startTime();
 
     }
 
-    public void startTask(Runnable run){
+    public void startTask(Runnable run,String name){
         Thread r = new Thread(run);
         r.start();
+        System.out.println(name+ " started running");
     }
 
     public void startSelling(){
         for(int i = 0 ; i < selling ; i ++) {
-            Runnable run = new SellingService("selling number "+i);
-            startTask(run);
-            startInvetoryService();
-            startLogistics();
-            startResourceService();
-            startTime();
+            Runnable run = new SellingService("selling number " + i,countDown);
+            startTask(run,((SellingService) run).getName());
         }
+
+
     }
     public  void startApi(){
         for(int i = 0 ; i <customers.length;i++){
             LinkedList<Pair> list = null; //customer[i].sortSchdeule();
-            Runnable run = new APIService("API number "+i,customers[i],list);
-            startTask(run);
+            Runnable run = new APIService("API number "+i,customers[i],list,countDown);
+            startTask(run,((APIService) run).getName());
         }
     }
     public void startInvetoryService(){
         for(int i=0; i<inventoryService ; i++){
-            Runnable run = new InventoryService("inventory number "+i);
-            startTask(run);
+            Runnable run = new InventoryService("inventory number "+i,countDown);
+            startTask(run,((InventoryService) run).getName());
         }
     }
     public void startLogistics(){
         for(int i=0 ; i < logistics ; i++){
-            Runnable run = new LogisticsService("logistics number "+i);
-            startTask(run);
+            Runnable run = new LogisticsService("logistics number "+i,countDown);
+            startTask(run,((LogisticsService) run).getName());
         }
     }
     public void startResourceService(){
         for (int i = 0 ; i<resourcesService ;i++){
-            Runnable run = new ResourceService("resource number "+i);
-            startTask(run);
+            Runnable run = new ResourceService("resource number "+i,countDown);
+            startTask(run,((ResourceService) run).getName());
         }
     }
     public void startTime(){
-        Runnable run = time;
-        startTask(run);
+
+        Runnable run = new TimeService(time.getSpeed(),time.getDuration(),countDown);
+        startTask(run,((TimeService) run).getName());
     }
 
 
