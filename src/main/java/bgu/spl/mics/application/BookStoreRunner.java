@@ -47,6 +47,7 @@ public class BookStoreRunner {
         } catch (InterruptedException igrnoed) {
         }
 
+/*
 
         try {
             FileOutputStream temp1 = new FileOutputStream(new File(args[1]));
@@ -69,6 +70,7 @@ public class BookStoreRunner {
             e.printStackTrace();
         }
 
+*/
 
     }
 }
