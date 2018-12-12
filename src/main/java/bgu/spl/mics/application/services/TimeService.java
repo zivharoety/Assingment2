@@ -27,40 +27,46 @@ public class TimeService extends MicroService {
 	private TimerTask timerTask;
 	private Timer timer;
 	private CountDownLatch countDown;
+	private boolean stop;
 
 	private int currTick;
 
 	public TimeService(int speed, int duration, CountDownLatch countD) {
 		super("time");
-		super.bus = MessageBusImpl.getInstance();
-		this.countDown  =countD;
+		//super.bus = MessageBusImpl.getInstance();
+		//bus = MessageBusImpl.getInstance();
+		this.countDown = countD;
 		this.duration = duration;
 		this.speed = speed;
 		this.currTick = 0;
+		this.stop = false;
 		this.timer = new Timer();
 		this.timerTask = new TimerTask() {
 			@Override
 			public void run() {
 				currTick++;
 				if (currTick == duration) {
+					sendBroadcast(new Tick(currTick, duration));
 					timerTask.cancel();
 					timer.cancel();
+					System.out.println("time service terminating");
+					stop = true;
 					terminate();
-				}
-				sendBroadcast(new Tick(currTick, duration));
-				System.out.println("Tick number "+currTick+" is sent");
-			}
-		};
 
+				}
+				if (!stop) {
+					sendBroadcast(new Tick(currTick, duration));
+					System.out.println("Tick number " + currTick + " is sent");
+				}
+			}
+
+		};
 	}
 
 
 	@Override
 	protected void initialize() {
 		timer.schedule(timerTask,speed,speed);
-
-
-
 	}
 }
 

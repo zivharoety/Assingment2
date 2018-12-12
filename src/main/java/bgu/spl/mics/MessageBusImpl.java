@@ -1,4 +1,6 @@
 package bgu.spl.mics;
+import bgu.spl.mics.application.passiveObjects.Customer;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -12,8 +14,8 @@ public class MessageBusImpl implements MessageBus {
     private ConcurrentHashMap<Event, Future> futureMap;
     private ConcurrentHashMap<Class<? extends Event>, LinkedList> eventTypeQueue;//to implement RoundedQueue!!!
     private ConcurrentHashMap<MicroService, BlockingQueue<Message>> microQueue;
-    private ConcurrentHashMap<Class<? extends Broadcast>, LinkedList<MicroService>> broadcastTypeList;
-    private ConcurrentHashMap<MicroService , LinkedList<Class<? extends Event<?>>>> microRegisterEvent;
+    private HashMap<Class<? extends Broadcast>, ConcurrentLinkedQueue<MicroService>> broadcastTypeList;
+    private HashMap<MicroService , LinkedList<Class<? extends Event<?>>>> microRegisterEvent;
     private ConcurrentHashMap<MicroService , LinkedList<Class<? extends Broadcast>>> microRegisterBroad;
     //private static MessageBusImpl instance = new MessageBusImpl();
 
@@ -22,9 +24,10 @@ public class MessageBusImpl implements MessageBus {
         futureMap = new ConcurrentHashMap<>();
         eventTypeQueue = new ConcurrentHashMap<>();
         microQueue = new ConcurrentHashMap<>();
-        broadcastTypeList = new ConcurrentHashMap<>();
-        microRegisterEvent = new ConcurrentHashMap<>();
+        broadcastTypeList = new HashMap<>();
+        microRegisterEvent = new HashMap<>();
         microRegisterBroad = new ConcurrentHashMap<>();
+
     }
 
     private static class MessageBusHolder {
@@ -56,7 +59,8 @@ public class MessageBusImpl implements MessageBus {
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
         if (broadcastTypeList.get(type) == null) {
             synchronized (broadcastTypeList) {
-                broadcastTypeList.put(type, new LinkedList());
+           //     broadcastTypeList.put(type, new LinkedList());
+                broadcastTypeList.put(type, new ConcurrentLinkedQueue<>());
             }
         }
         broadcastTypeList.get(type).add(m);
@@ -67,12 +71,13 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public <T> void complete(Event<T> e, T result) {
         futureMap.get(e).resolve(result);
+        //futureMap.remove(e);
 
     }
 
     @Override
     public void sendBroadcast(Broadcast b) {
-        synchronized ((broadcastTypeList.get(b.getClass()))) {
+       synchronized ((broadcastTypeList.get(b.getClass()))) {
             for (MicroService m : broadcastTypeList.get(b.getClass())) {
                 try {
                     microQueue.get(m).put(b);
@@ -152,4 +157,5 @@ public class MessageBusImpl implements MessageBus {
         return toReturn;
 
     }
+
 }

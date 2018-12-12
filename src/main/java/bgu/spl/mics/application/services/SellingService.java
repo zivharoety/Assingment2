@@ -44,9 +44,6 @@ public class SellingService extends MicroService{
 			System.out.println(getName() + "got a Book Order Event");
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
 			futureAvailable = sendEvent(toCheck);
-			TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
-			OrderReceipt receipt = new OrderReceipt(message.getOrderId(),this.getName(),message.getCustomer().getId(),message.getBookName(),
-					message.getOrderTick(),currTick);
 			boolean gotKey = false;
 			if(futureAvailable.get() != -1){
 				while(!gotKey) {
@@ -56,19 +53,22 @@ public class SellingService extends MicroService{
 					} catch (InterruptedException igrnored) {
 					}
 				}
-				if (message.getCustomer().getSem().tryAcquire()){
-					if(message.getCustomer().getAvailableCreditAmount() <= futureAvailable.get()){
+
+					if(message.getCustomer().getAvailableCreditAmount() >= futureAvailable.get()){
+						TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
 						futureIsTaken = sendEvent(toTake);
 						if(futureIsTaken.get() == OrderResult.SUCCESSFULLY_TAKEN){
+							OrderReceipt receipt = new OrderReceipt(message.getOrderId(),this.getName(),message.getCustomer().getId(),message.getBookName(),
+									message.getOrderTick(),currTick);
 							moneyRegister.chargeCreditCard(message.getCustomer() , futureAvailable.get());
 							receipt.setPrice(futureAvailable.get());
 							receipt.setIssuedTick(currTick);
 							moneyRegister.file(receipt);
 							complete(message,receipt);
+							System.out.println("Completed purchase "+message.getBookName());
 						}
 					}
 					message.getCustomer().getSem().release();
-				}
 			}
 			complete(message , null);
 

@@ -59,6 +59,7 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
+		System.out.println("Inventory: Trying to take "+book);
 		if(map.get(book) == null)
 			return NOT_IN_STOCK;
 		// checking whether it is in stock
@@ -76,6 +77,7 @@ public class Inventory {
      * @return the price of the book if it is available, -1 otherwise.
      */
 	public int checkAvailabiltyAndGetPrice(String book){
+		System.out.println("Inventory: checking availability "+book);
 		if(map.get(book) == null || map.get(book).getAmountInInventory() == 0)
 			return -1;
 		return map.get(book).getPrice();
@@ -91,11 +93,14 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
+			HashMap<String,Integer> finalInventory = new HashMap<>();
+			for(String s : map.keySet())
+				finalInventory.put(s,map.get(s).getAmountInInventory());
 		try {
 			FileOutputStream toPrint = new FileOutputStream(new File(filename));
 			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
-			toWrite.writeObject(map);
-			toWrite.flush();//to check if really necessary.
+			toWrite.writeObject(finalInventory);
+		//	toWrite.flush();//to check if really necessary.
 			toWrite.close();
 
 		} catch (FileNotFoundException ignord) {

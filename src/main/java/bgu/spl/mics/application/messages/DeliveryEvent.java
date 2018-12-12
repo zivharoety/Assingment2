@@ -8,6 +8,7 @@ public class DeliveryEvent implements Event {
 
     public DeliveryEvent(Customer customer){
         this.customer = customer;
+        System.out.println("new DE for "+customer.getName());
     }
 
     public Customer getCustomer() {

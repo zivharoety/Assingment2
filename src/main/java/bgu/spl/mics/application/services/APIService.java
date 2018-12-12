@@ -2,8 +2,8 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.Pair;
@@ -61,6 +61,7 @@ public class APIService extends MicroService{
 						if (futureOrder.get() != null) {
 							DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
 							sendEvent(deliveryEvent);
+							futureOrder = null;
 						}
 						orderSchedule.removeFirst();
 						if (orderSchedule.size() == 0 || orderSchedule.getFirst().getSecond() != curr)

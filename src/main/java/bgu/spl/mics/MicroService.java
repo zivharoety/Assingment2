@@ -175,10 +175,11 @@ public abstract class MicroService implements Runnable {
                 else{
                     myCallback.get(toDo.getClass()).call(toDo);}
             } catch (InterruptedException ignored) {
-                notifyAll();
+                Thread.currentThread().interrupt();
             }
         }
         bus.unregister(this);
+     //   terminate();
     }
 
 }

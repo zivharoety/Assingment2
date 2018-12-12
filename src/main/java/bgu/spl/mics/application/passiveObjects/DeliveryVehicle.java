@@ -8,12 +8,14 @@ package bgu.spl.mics.application.passiveObjects;
 public class DeliveryVehicle {
 	private int license;
 	private int speed;
+	private boolean occupied;
 	/**
      * Constructor.   
      */
 	 public DeliveryVehicle(int license, int speed) {
 		this.license=license;
 		this.speed=speed;
+		this.occupied =false;
 	  }
 	/**
      * Retrieves the license of this delivery vehicle.   
@@ -40,7 +42,19 @@ public class DeliveryVehicle {
      */
 	public void deliver(String address, int distance) {
 		try {
+			System.out.println("vehicle number "+license+" is delivering the book");
 			Thread.sleep(distance*speed);
 		} catch (InterruptedException e) {}
+	}
+
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void Occupied() {
+		this.occupied = true;
+	}
+	public void free(){
+		this.occupied = false;
 	}
 }

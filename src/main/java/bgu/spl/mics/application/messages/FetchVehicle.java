@@ -8,6 +8,7 @@ public class FetchVehicle implements Event<DeliveryVehicle> {
 
     public FetchVehicle (int distance){
         this.distance = distance;
+        System.out.println("new FV was established");
     }
 
     public int getDistance() {

@@ -57,7 +57,6 @@ public class Customer {
 		return toReturn;
 	}
 	public String getName() {
-
 		return name;
 	}
 
@@ -65,7 +64,6 @@ public class Customer {
      * Retrieves the ID of the customer  . 
      */
 	public int getId() {
-		// TODO Implement this
 		return id;
 	}
 	
@@ -73,7 +71,6 @@ public class Customer {
      * Retrieves the address of the customer.  
      */
 	public String getAddress() {
-		// TODO Implement this
 		return address;
 	}
 	
@@ -81,7 +78,6 @@ public class Customer {
      * Retrieves the distance of the customer from the store.  
      */
 	public int getDistance() {
-		// TODO Implement this
 		return distance;
 	}
 
@@ -92,7 +88,6 @@ public class Customer {
      * @return A list of receipts.
      */
 	public List<OrderReceipt> getCustomerReceiptList() {
-		// TODO Implement this
 		return myOrders;
 	}
 	
@@ -102,7 +97,6 @@ public class Customer {
      * @return Amount of money left.   
      */
 	public int getAvailableCreditAmount() {
-
 		return creditAmount;
 	}
 	
@@ -110,7 +104,6 @@ public class Customer {
      * Retrieves this customers credit card serial number.    
      */
 	public int getCreditNumber() {
-		// TODO Implement this
 		return creditNumber;
 	}
 

@@ -2,11 +2,12 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.FetchVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
 import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.*;
-import bgu.spl.mics.application.messages.DeliveryEvent;
+
 
 import java.util.concurrent.CountDownLatch;
 

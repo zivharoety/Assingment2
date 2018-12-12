@@ -62,6 +62,7 @@ public class MoneyRegister {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
+		System.out.println("Money Register: charging credit card "+c.getName()+" amount: "+amount);
 				totalEarning.addAndGet(amount);
 				c.reduceCredit(amount);
 	}
@@ -76,7 +77,7 @@ public class MoneyRegister {
 			FileOutputStream toPrint = new FileOutputStream(new File(filename));
 			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
 			toWrite.writeObject(recipts);
-			toWrite.flush();//to check if really necessary.
+			//toWrite.flush();//to check if really necessary.
 			toWrite.close();
 
 		} catch (FileNotFoundException ignord) {

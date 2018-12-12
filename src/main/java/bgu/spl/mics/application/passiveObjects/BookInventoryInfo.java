@@ -50,7 +50,7 @@ public class BookInventoryInfo {
 	}
 
 	public void reduceAmount(){
-		amount -= amount;
+		amount = amount -1;
 	}
 
 	public Semaphore getSem() {

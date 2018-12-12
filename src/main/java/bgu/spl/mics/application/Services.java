@@ -1,10 +1,12 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.Pair;
 import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.services.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,6 +18,8 @@ public class Services {
     public int resourcesService;
     public Customer[] customers;
     private CountDownLatch countDown;
+    public HashMap<Integer, Customer> customerMap;
+
 
     public void setCustomers() {
         for (int i = 0; i < customers.length; i++) {
@@ -49,10 +53,12 @@ public class Services {
 
     }
     public  void startApi(){
+        customerMap = new HashMap<>();
         for(int i = 0 ; i <customers.length;i++){
             LinkedList<Pair> list = null; //customer[i].sortSchdeule();
             Runnable run = new APIService("API number "+i,customers[i],list,countDown);
             startTask(run,((APIService) run).getName());
+            customerMap.put(customers[i].getId(),customers[i]);
         }
     }
     public void startInvetoryService(){
@@ -76,6 +82,11 @@ public class Services {
     public void startTime(){
 
         Runnable run = new TimeService(time.getSpeed(),time.getDuration(),countDown);
+        try {
+            countDown.await();
+        }
+        catch(InterruptedException ignored){}
+
         startTask(run,((TimeService) run).getName());
     }
 
