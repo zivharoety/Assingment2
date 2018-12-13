@@ -1,11 +1,14 @@
 package bgu.spl.mics.application.passiveObjects;
+
+import java.io.Serializable;
+
 /**
  * Passive data-object representing a delivery vehicle of the store.
  * You must not alter any of the given public methods of this class.
  * <p>
  * You may add ONLY private fields and methods to this class.
  */
-public class DeliveryVehicle {
+public class DeliveryVehicle implements Serializable {
 	private int license;
 	private int speed;
 	private boolean occupied;

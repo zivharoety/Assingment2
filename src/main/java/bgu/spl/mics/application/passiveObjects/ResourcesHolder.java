@@ -2,6 +2,7 @@ package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.Future;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.concurrent.*;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.*;
  * <p>
  * You can add ONLY private methods and fields to this class.
  */
-public class ResourcesHolder {
+public class ResourcesHolder implements Serializable {
 	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicle;
 	private ConcurrentLinkedQueue<Future<DeliveryVehicle>> waitingVehicle;
 	private Semaphore sema;

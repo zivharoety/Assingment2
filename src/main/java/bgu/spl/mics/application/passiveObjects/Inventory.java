@@ -19,7 +19,7 @@ import static bgu.spl.mics.application.passiveObjects.OrderResult.*;
  */
 
 
-public class Inventory {
+public class Inventory implements Serializable {
 		public Map<String,BookInventoryInfo> map;
 
 		private Inventory(){
@@ -65,7 +65,7 @@ public class Inventory {
 		// checking whether it is in stock
 		if(!map.get(book).getSem().tryAcquire())
 			return NOT_IN_STOCK;
-		map.get(book).reduceAmount();// reducing amount
+		map.get(book).reduceAmount(); // reduce amount
 		return SUCCESSFULLY_TAKEN;
 	}
 
@@ -94,8 +94,9 @@ public class Inventory {
      */
 	public void printInventoryToFile(String filename){
 			HashMap<String,Integer> finalInventory = new HashMap<>();
-			for(String s : map.keySet())
-				finalInventory.put(s,map.get(s).getAmountInInventory());
+			for(String s : map.keySet()) {
+				finalInventory.put(s, map.get(s).getAmountInInventory());
+			}
 		try {
 			FileOutputStream toPrint = new FileOutputStream(new File(filename));
 			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);

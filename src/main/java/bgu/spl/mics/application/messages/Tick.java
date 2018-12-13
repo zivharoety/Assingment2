@@ -2,7 +2,9 @@ package bgu.spl.mics.application.messages;
 
 import bgu.spl.mics.Broadcast;
 
-public class Tick implements Broadcast {
+import java.io.Serializable;
+
+public class Tick implements Broadcast , Serializable {
     private int Tick;
     private int duration;
 

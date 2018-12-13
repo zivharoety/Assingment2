@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import java.io.Serializable;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -8,7 +9,7 @@ import java.util.concurrent.Semaphore;
  * <p>
  * You may add fields and methods to this class as you see fit (including public methods).
  */
-public class BookInventoryInfo {
+public class BookInventoryInfo implements Serializable {
 	private String bookTitle;
 	private int price;
 	private int amount;

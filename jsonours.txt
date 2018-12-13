@@ -1,6 +1,6 @@
 {
   "initialInventory": [
-  {"bookTitle": "Harry Poter", "amount": 10, "price": 90},
+  {"bookTitle": "Harry Poter", "amount": 3, "price": 90},
   {"bookTitle": "The Hunger Games", "amount": 90, "price": 12},
   {"bookTitle": "The Rise and Fall of Omer Sela", "amount": 41, "price": 10},
   {"bookTitle": "Sefer Hagays", "amount": 21, "price": 50}

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  * You can add ONLY private fields and methods to this class as you see fit.
  */
-public class MoneyRegister {
+public class MoneyRegister implements Serializable {
 	AtomicInteger totalEarning;
 	LinkedList<OrderReceipt> recipts;
 	AtomicReference<LinkedList<OrderReceipt>> orders;

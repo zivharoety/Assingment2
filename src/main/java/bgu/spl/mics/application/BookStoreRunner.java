@@ -40,43 +40,46 @@ public class BookStoreRunner {
             parser.services.setCustomers();
             parser.services.startProgram();
             toPrint = parser;
-        } catch (FileNotFoundException i) {
-        }
-        try {
-            Thread.sleep(toPrint.services.time.getDuration() * toPrint.services.time.getSpeed());
-        } catch (InterruptedException igrnoed) {
-        }
+            for(Thread t :parser.services.threadList) {
+                try {
+                    t.join();
+                } catch (InterruptedException ignored) {
 
-/*
+                }
+            }}catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try (FileOutputStream temp1 = new FileOutputStream(new File(args[1]))) {
+                try (ObjectOutputStream customers = new ObjectOutputStream(temp1)) {
+                    customers.writeObject(toPrint.services.customerMap);
 
-        try {
-            FileOutputStream temp1 = new FileOutputStream(new File(args[1]));
-            ObjectOutputStream customers = new ObjectOutputStream(temp1);
-            customers.writeObject(toPrint.services.customerMap);
-            customers.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        }
-        Inventory.getInstance().printInventoryToFile(args[2]);
-        MoneyRegister.getInstance().printOrderReceipts(args[3]);
-        try{
-            FileOutputStream temp2 = new FileOutputStream(new File(args[4]));
-            ObjectOutputStream moneyRegisterPrinter = new ObjectOutputStream(temp2);
-            moneyRegisterPrinter.writeObject(MoneyRegister.getInstance());
+                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
+                }
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Inventory.getInstance().printInventoryToFile(args[2]);
+            MoneyRegister.getInstance().printOrderReceipts(args[3]);
 
-*/
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Thread.currentThread().getThreadGroup().list();
-        //System.out.println(Thread.activeCount());
+            try (FileOutputStream temp2 = new FileOutputStream(new File(args[4]))) {
+                try (ObjectOutputStream moneyRegisterPrinter = new ObjectOutputStream(temp2)) {
+                    moneyRegisterPrinter.writeObject(MoneyRegister.getInstance());
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
-}
+
+    }
+

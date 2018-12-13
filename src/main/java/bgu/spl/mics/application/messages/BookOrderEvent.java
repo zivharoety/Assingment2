@@ -4,7 +4,9 @@ import bgu.spl.mics.Event;
 import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 
-public class BookOrderEvent implements Event<OrderReceipt> {
+import java.io.Serializable;
+
+public class BookOrderEvent implements Event<OrderReceipt> , Serializable {
     private Customer customer;
     private String bookName;
     private int orderTick;

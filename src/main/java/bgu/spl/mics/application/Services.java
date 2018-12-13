@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
 public class Services {
+    public LinkedList<Thread> threadList;
+    public Thread timeServiceThread;
     public TimeInput time ;
     public int selling;
     public int inventoryService;
@@ -29,6 +31,7 @@ public class Services {
 
     public void startProgram(){
         countDown = new CountDownLatch(selling + customers.length+resourcesService+logistics+inventoryService);
+        threadList = new LinkedList<>();
         startSelling();
         startApi();
         startInvetoryService();
@@ -40,6 +43,7 @@ public class Services {
 
     public void startTask(Runnable run,String name){
         Thread r = new Thread(run);
+        threadList.add(r);
         r.start();
         //System.out.println(name+ " started running");
     }
@@ -86,7 +90,8 @@ public class Services {
             countDown.await();
         }
         catch(InterruptedException ignored){}
-
+        /*timeServiceThread = new Thread(run);
+        timeServiceThread.start();*/
         startTask(run,((TimeService) run).getName());
     }
 
