@@ -16,6 +16,7 @@ import java.util.concurrent.*;
  */
 public class ResourcesHolder {
 	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicle;
+	private ConcurrentLinkedQueue<Future<DeliveryVehicle>> waitingVehicle;
 	private Semaphore sema;
 
 
@@ -32,6 +33,7 @@ public class ResourcesHolder {
 
 	private ResourcesHolder(){
 		availableVehicle = new ConcurrentLinkedQueue<>();
+		waitingVehicle = new ConcurrentLinkedQueue<>();
 
 	}
 	
@@ -43,15 +45,15 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		System.out.println("Resource Holder aquirning vehicle");
+		//System.out.println("Resource Holder aquirning vehicle");
 		Future<DeliveryVehicle> toReturn = new Future();
-		try{
-			sema.acquire();
-
-				toReturn.resolve(availableVehicle.poll());
-
+		if(!sema.tryAcquire())
+			waitingVehicle.add(toReturn);
+		else {
+			toReturn.resolve(availableVehicle.poll());
 		}
-		catch (InterruptedException ignored){}
+
+
 		return toReturn;
 	}
 	
@@ -62,11 +64,13 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		System.out.println("Resource Holder : Resleasing vehicle");
-
+		//System.out.println("Resource Holder : Resleasing vehicle");
+		if (waitingVehicle.size() > 0) {
+			waitingVehicle.poll().resolve(vehicle);
+		} else {
 			availableVehicle.add(vehicle);
-		sema.release();
-		//notifyAll();
+			sema.release();
+		}
 	}
 	
 	/**

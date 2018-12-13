@@ -23,12 +23,12 @@ import java.util.concurrent.CountDownLatch;
  * <p>
  */
 public abstract class MicroService implements Runnable {
-    protected MessageBus bus;
+    private MessageBus bus;
     private boolean terminated = false;
     private final String name;
     private Future myFuture;
     private HashMap<Class<? extends Message>,Callback> myCallback ;
-    protected Message toDo;
+    private Message toDo;
     private boolean isRegister;
 
     /**
@@ -176,10 +176,13 @@ public abstract class MicroService implements Runnable {
                     myCallback.get(toDo.getClass()).call(toDo);}
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
+                notifyAll();
             }
         }
         bus.unregister(this);
+        //System.out.println(getName()+ "is terminating");
      //   terminate();
     }
+
 
 }

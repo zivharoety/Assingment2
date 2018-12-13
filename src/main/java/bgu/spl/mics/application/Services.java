@@ -41,7 +41,7 @@ public class Services {
     public void startTask(Runnable run,String name){
         Thread r = new Thread(run);
         r.start();
-        System.out.println(name+ " started running");
+        //System.out.println(name+ " started running");
     }
 
     public void startSelling(){

@@ -38,9 +38,7 @@ public class InventoryService extends MicroService{
 		});
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getDuration()==message.getTick()) {
-				bus.unregister(this);
 				terminate();
-				System.out.println(getName()+ "is terminating");
 			}
 		});
 		countDown.countDown();

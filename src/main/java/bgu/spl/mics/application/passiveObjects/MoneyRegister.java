@@ -62,7 +62,7 @@ public class MoneyRegister {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
-		System.out.println("Money Register: charging credit card "+c.getName()+" amount: "+amount);
+		//System.out.println("Money Register: charging credit card "+c.getName()+" amount: "+amount);
 				totalEarning.addAndGet(amount);
 				c.reduceCredit(amount);
 	}

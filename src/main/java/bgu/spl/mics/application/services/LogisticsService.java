@@ -33,16 +33,15 @@ public class LogisticsService extends MicroService {
 	protected void initialize() {
 		subscribeEvent(DeliveryEvent.class, (DeliveryEvent message) -> {
 			FetchVehicle toSend = new FetchVehicle(message.getCustomer().getDistance());
-			Future<DeliveryVehicle> future = sendEvent(toSend);
-			future.get().deliver(message.getCustomer().getAddress(),message.getCustomer().getDistance());
-			ReleaseVehicle toRelease = new ReleaseVehicle(future.get());
+			Future<?> future = sendEvent(toSend);
+			Future<?> future2 = (Future<?>) future.get();
+			((DeliveryVehicle) future2.get()).deliver(message.getCustomer().getAddress(),message.getCustomer().getDistance());
+			ReleaseVehicle toRelease = new ReleaseVehicle((DeliveryVehicle) future2.get());
 			sendEvent(toRelease);
 		});
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getDuration()==message.getTick()) {
-				bus.unregister(this);
 				terminate();
-				System.out.println(getName()+ "is terminating");
 			}
 		});
 		countDown.countDown();

@@ -1,4 +1,5 @@
 package bgu.spl.mics;
+import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.passiveObjects.Customer;
 
 import java.util.*;
@@ -92,18 +93,44 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
-        Future<T> toReturn = new Future<>();
+       Future<T> toReturn = new Future<>();
+       futureMap.put(e,toReturn);
+        synchronized (eventTypeQueue.get(e.getClass())){
+       if(eventTypeQueue.get(e.getClass())== null || eventTypeQueue.get(e.getClass()).isEmpty()){
+           complete(e,null);
+       }
+       else {
+           MicroService temp = (MicroService) eventTypeQueue.get(e.getClass()).removeFirst();
+           try {
+               microQueue.get(temp).put(e);
+           } catch (InterruptedException e1) {
+               e1.printStackTrace();
+           }
+           eventTypeQueue.get(e.getClass()).addLast(temp);
+       }
+       }
+       return toReturn;
+
+
+
+        /* Future<T> toReturn = new Future<>();
         futureMap.put(e, toReturn);// mapping the future to the event map
-        MicroService temp;
+        MicroService temp = null;
         try {
             synchronized (eventTypeQueue.get(e.getClass())) {
-                temp = (MicroService) eventTypeQueue.get(e.getClass()).removeFirst();
+                if(eventTypeQueue.get(e.getClass()) == null || eventTypeQueue.get(e.getClass()).isEmpty()){
+                    complete(e,null);
+                }
+                else {
+                        temp = (MicroService) eventTypeQueue.get(e.getClass()).removeFirst();
+                }
             }
                 try {
                     microQueue.get(temp).put(e);
                 } catch (InterruptedException ignored) {
                     /// to understand what we need to do
                 }
+            //    catch (NullPointerException ignored){}
 
             }
          catch (NullPointerException exc) {
@@ -112,7 +139,7 @@ public class MessageBusImpl implements MessageBus {
     synchronized ((eventTypeQueue.get(e.getClass()))) {
         eventTypeQueue.get(e.getClass()).addLast(temp);
     }
-        return toReturn;
+        return toReturn; */
     }
 
     @Override
@@ -131,13 +158,22 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void unregister(MicroService m) {
-
         for(int i=0 ; i < microRegisterEvent.get(m).size(); i ++){
             eventTypeQueue.get( microRegisterEvent.get(m).get(i)).remove(m);
         }
         for(int i=0 ; i < microRegisterBroad.get(m).size(); i ++){
             broadcastTypeList.get( microRegisterBroad.get(m).get(i)).remove(m);
         }
+        LinkedList<Event<?>> toResolve = new LinkedList<>();
+        for(Message mes : microQueue.get(m)){
+            if(mes instanceof Event<?>){
+                toResolve.add((Event<?>) mes);
+            }
+        }
+        for(Event<?> res : toResolve){
+            complete(res,null);
+        }
+
 
     }
 
@@ -157,5 +193,6 @@ public class MessageBusImpl implements MessageBus {
         return toReturn;
 
     }
+
 
 }

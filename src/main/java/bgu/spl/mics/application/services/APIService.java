@@ -45,9 +45,7 @@ public class APIService extends MicroService{
 	protected void initialize() {
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getTick()==message.getDuration()){
-				bus.unregister(this);
 				terminate();
-				System.out.println(getName()+ "is terminating");
 			}
 			boolean toRun = true;
 			if(orderSchedule.size() > 0) {
@@ -57,7 +55,7 @@ public class APIService extends MicroService{
 						BookOrderEvent order = new BookOrderEvent(myCustomer, toOrder.getFirst(), toOrder.getSecond(), orderId);
 						orderId++;
 						futureOrder = sendEvent(order);
-						System.out.println(getName() + " sent Event" + order.getBookName());
+						//System.out.println(getName() + " sent Event" + order.getBookName());
 						if (futureOrder.get() != null) {
 							DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
 							sendEvent(deliveryEvent);

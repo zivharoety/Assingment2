@@ -42,7 +42,7 @@ public class DeliveryVehicle {
      */
 	public void deliver(String address, int distance) {
 		try {
-			System.out.println("vehicle number "+license+" is delivering the book");
+			//System.out.println("vehicle number "+license+" is delivering the book");
 			Thread.sleep(distance*speed);
 		} catch (InterruptedException e) {}
 	}

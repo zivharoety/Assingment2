@@ -31,7 +31,6 @@ public class SellingService extends MicroService{
 
 	public SellingService(String name, CountDownLatch countD) {
 		super(name);
-		bus = MessageBusImpl.getInstance();
 		currTick = 0;
 		countDown = countD;
 		moneyRegister = MoneyRegister.getInstance();
@@ -39,9 +38,9 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		System.out.println(getName()+" started running");
+		//System.out.println(getName()+" started running");
 		subscribeEvent(BookOrderEvent.class , (BookOrderEvent message)->{
-			System.out.println(getName() + "got a Book Order Event");
+			//System.out.println(getName() + "got a Book Order Event");
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
 			futureAvailable = sendEvent(toCheck);
 			boolean gotKey = false;
@@ -65,19 +64,20 @@ public class SellingService extends MicroService{
 							receipt.setIssuedTick(currTick);
 							moneyRegister.file(receipt);
 							complete(message,receipt);
-							System.out.println("Completed purchase "+message.getBookName());
+							//System.out.println("Completed purchase "+message.getBookName());
 						}
 					}
 					message.getCustomer().getSem().release();
 			}
-			complete(message , null);
+			else {
+				complete(message, null);
+			}
+
 
 		});
 		subscribeBroadcast(Tick.class,(Tick message)->{
 			if(message.getTick()==message.getDuration()) {
-				bus.unregister(this);
 				terminate();
-				System.out.println(getName()+ "is terminating");
 			}
 			currTick = message.getTick();
 		});

@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.FetchVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
@@ -31,16 +32,15 @@ public class ResourceService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeEvent(FetchVehicle.class, (FetchVehicle message)->{
-			complete(message,resource.acquireVehicle().get());
+			Future<DeliveryVehicle> toReturn = resource.acquireVehicle();
+			complete(message,toReturn);
 		});
 		subscribeEvent(ReleaseVehicle.class, (ReleaseVehicle message)->{
 			resource.releaseVehicle(message.getVehicle());
 		});
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getDuration()==message.getTick()){
-				bus.unregister(this);
 				terminate();
-				System.out.println(getName()+ "is terminating");
 			}
 
 		});

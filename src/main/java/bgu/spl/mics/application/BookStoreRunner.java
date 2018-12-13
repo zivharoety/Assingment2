@@ -71,6 +71,12 @@ public class BookStoreRunner {
         }
 
 */
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Thread.currentThread().getThreadGroup().list();
+        //System.out.println(Thread.activeCount());
     }
 }

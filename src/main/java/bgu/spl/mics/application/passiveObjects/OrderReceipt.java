@@ -19,7 +19,7 @@ public class OrderReceipt {
 
 	public OrderReceipt(int orderId, String seller, int customerId, String bookTitle,
 						 int orderTick, int proccessTick ){
-		System.out.println("Issuing order Receipt");
+		//System.out.println("Issuing order Receipt");
 		this.orderId=orderId;
 		this.seller=seller;
 		this.customerId=customerId;

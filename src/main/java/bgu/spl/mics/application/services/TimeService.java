@@ -49,14 +49,15 @@ public class TimeService extends MicroService {
 					sendBroadcast(new Tick(currTick, duration));
 					timerTask.cancel();
 					timer.cancel();
-					System.out.println("time service terminating");
 					stop = true;
 					terminate();
+
+				//System.exit(88);
 
 				}
 				if (!stop) {
 					sendBroadcast(new Tick(currTick, duration));
-					System.out.println("Tick number " + currTick + " is sent");
+					//System.out.println("Tick number " + currTick + " is sent");
 				}
 			}
 
@@ -67,6 +68,11 @@ public class TimeService extends MicroService {
 	@Override
 	protected void initialize() {
 		timer.schedule(timerTask,speed,speed);
+		subscribeBroadcast(Tick.class,(Tick message)->{
+			if(message.getTick()==message.getDuration()) {
+				terminate();
+			}
+		});
 	}
 }
 
