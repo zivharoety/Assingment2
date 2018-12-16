@@ -4,7 +4,9 @@ import bgu.spl.mics.application.passiveObjects.BookInventoryInfo;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import com.google.gson.annotations.SerializedName;
 
-public class JsonParser {
+import java.io.Serializable;
+
+public class JsonParser implements Serializable {
 
     public BookInventoryInfo[] initialInventory;
     public Resource[] initialResources;

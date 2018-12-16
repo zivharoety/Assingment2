@@ -11,7 +11,7 @@ public class ReleaseVehicle implements Event<Boolean>, Serializable {
 
     public ReleaseVehicle(DeliveryVehicle vehicle){
         this.vehicle = vehicle;
-        //System.out.println("Release vehicle event "+vehicle.getLicense());
+    //    System.out.println("Release vehicle event "+vehicle.getLicense());
     }
 
     public DeliveryVehicle getVehicle() {

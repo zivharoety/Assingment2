@@ -44,10 +44,12 @@ public class DeliveryVehicle implements Serializable {
      * @param distance	The distance from the store to the customer.
      */
 	public void deliver(String address, int distance) {
+		System.out.println("Deliver with "+license+" to "+address);
 		try {
 			//System.out.println("vehicle number "+license+" is delivering the book");
-			Thread.sleep(distance*speed);
+			Thread.sleep((long) distance*speed);
 		} catch (InterruptedException e) {}
+		System.out.println("Diliver to "+address + " Done");
 	}
 
 	public boolean isOccupied() {

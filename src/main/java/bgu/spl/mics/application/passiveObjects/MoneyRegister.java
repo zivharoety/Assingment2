@@ -86,4 +86,14 @@ public class MoneyRegister implements Serializable {
 
 		}
 	}
+	//to delete
+	public OrderReceipt[] getRecipts(){
+		OrderReceipt[] toReturn = new OrderReceipt[recipts.size()];
+		int i = 0;
+		for(OrderReceipt r : recipts){
+			toReturn[i] = r;
+			i++;
+		}
+		return  toReturn;
+	}
 }

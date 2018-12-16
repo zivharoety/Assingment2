@@ -57,7 +57,7 @@ public class TimeService extends MicroService {
 				}
 				if (!stop) {
 					sendBroadcast(new Tick(currTick, duration));
-					//System.out.println("Tick number " + currTick + " is sent");
+					System.out.println("Tick number " + currTick + " is sent");
 				}
 			}
 

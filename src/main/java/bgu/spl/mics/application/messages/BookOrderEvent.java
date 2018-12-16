@@ -13,7 +13,7 @@ public class BookOrderEvent implements Event<OrderReceipt> , Serializable {
     private int orderId;
 
     public BookOrderEvent(Customer customer , String book , int tick,int orderId){
-        //System.out.println("new Book Order Event " + book+tick);
+        System.out.println("new Book Order Event " + book+tick);
         this.bookName = book;
         this.customer = customer;
         this.orderTick = tick;

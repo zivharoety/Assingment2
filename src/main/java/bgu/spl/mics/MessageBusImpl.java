@@ -15,8 +15,8 @@ public class MessageBusImpl implements MessageBus {
     private ConcurrentHashMap<Event, Future> futureMap;
     private ConcurrentHashMap<Class<? extends Event>, LinkedList> eventTypeQueue;//to implement RoundedQueue!!!
     private ConcurrentHashMap<MicroService, BlockingQueue<Message>> microQueue;
-    private HashMap<Class<? extends Broadcast>, ConcurrentLinkedQueue<MicroService>> broadcastTypeList;
-    private HashMap<MicroService , LinkedList<Class<? extends Event<?>>>> microRegisterEvent;
+    private ConcurrentHashMap<Class<? extends Broadcast>, ConcurrentLinkedQueue<MicroService>> broadcastTypeList;
+    private ConcurrentHashMap<MicroService , LinkedList<Class<? extends Event<?>>>> microRegisterEvent;
     private ConcurrentHashMap<MicroService , LinkedList<Class<? extends Broadcast>>> microRegisterBroad;
     //private static MessageBusImpl instance = new MessageBusImpl();
 
@@ -25,8 +25,8 @@ public class MessageBusImpl implements MessageBus {
         futureMap = new ConcurrentHashMap<>();
         eventTypeQueue = new ConcurrentHashMap<>();
         microQueue = new ConcurrentHashMap<>();
-        broadcastTypeList = new HashMap<>();
-        microRegisterEvent = new HashMap<>();
+        broadcastTypeList = new ConcurrentHashMap<>();
+        microRegisterEvent = new ConcurrentHashMap<>();
         microRegisterBroad = new ConcurrentHashMap<>();
 
     }
@@ -148,7 +148,7 @@ public class MessageBusImpl implements MessageBus {
         LinkedList<Class<? extends Event<?>>> mySubEvent = new LinkedList<>();
         LinkedList<Class<? extends Broadcast>> mySubBroad = new LinkedList<>();
         microQueue.put(m, toAdd);
-        microRegisterEvent.put(m,mySubEvent);
+        microRegisterEvent.put(m, mySubEvent);
         microRegisterBroad.put(m,mySubBroad);
 
 

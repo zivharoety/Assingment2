@@ -11,7 +11,7 @@ public class FetchVehicle implements Event<Future<DeliveryVehicle>> , Serializab
 
     public FetchVehicle (int distance){
         this.distance = distance;
-        //System.out.println("new FV was established");
+   //     System.out.println("new FV was established");
     }
 
     public int getDistance() {

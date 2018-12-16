@@ -38,6 +38,7 @@ public class Customer implements Serializable {
 		this.creditCard = creditCard;
 		this.orderSchedule = orderSchedule;
 
+
 	}
 
 	public LinkedList<Pair> sortAndGetList(){
@@ -113,6 +114,10 @@ public class Customer implements Serializable {
 		return sem;
 	}
 
+	public void addOrder(OrderReceipt r){
+		myOrders.addLast(r);
+	}
+
 	public void reduceCredit(int amount){
 		creditAmount = creditAmount - amount;
 	}
@@ -121,6 +126,7 @@ public class Customer implements Serializable {
 		this.sem = new Semaphore(1);
 		this.creditNumber = this.creditCard.getNumber();
 		this.creditAmount = this.creditCard.getAmount();
+		myOrders = new LinkedList<>();
 
 	}
 

@@ -46,10 +46,12 @@ public class ResourcesHolder implements Serializable {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		//System.out.println("Resource Holder aquirning vehicle");
+//		System.out.println("Resource Holder aquirning vehicle");
 		Future<DeliveryVehicle> toReturn = new Future();
-		if(!sema.tryAcquire())
+		if(!sema.tryAcquire()) {
+//			System.out.println("Resource Holder: no available car, add myself to waiting");
 			waitingVehicle.add(toReturn);
+		}
 		else {
 			toReturn.resolve(availableVehicle.poll());
 		}
@@ -65,9 +67,11 @@ public class ResourcesHolder implements Serializable {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		//System.out.println("Resource Holder : Resleasing vehicle");
+	//	System.out.println("Resource Holder : Resleasing vehicle");
+	//	System.out.println("Waiting List size : "+waitingVehicle.size());
 		if (waitingVehicle.size() > 0) {
 			waitingVehicle.poll().resolve(vehicle);
+	//		System.out.println("Reslovibng a vehicle to waiting car");
 		} else {
 			availableVehicle.add(vehicle);
 			sema.release();
@@ -85,5 +89,6 @@ public class ResourcesHolder implements Serializable {
 			availableVehicle.add(vehicles[i]);
 		}
 	}
+
 
 }

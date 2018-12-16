@@ -8,7 +8,10 @@ import bgu.spl.mics.application.messages.Tick;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 import bgu.spl.mics.application.passiveObjects.*;
 
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.
@@ -22,17 +25,24 @@ import java.util.concurrent.CountDownLatch;
 public class ResourceService extends MicroService{
 		private	ResourcesHolder resource;
 		private CountDownLatch countDown;
+		private static AtomicInteger resourceCounter = new AtomicInteger(0);
+		private static ConcurrentLinkedQueue<Future<DeliveryVehicle>> waitingFuture = new ConcurrentLinkedQueue<>();
 
 	public ResourceService(String name, CountDownLatch countD) {
 		super(name);
 		countDown = countD;
 		resource = ResourcesHolder.getInstance();
+		resourceCounter.getAndIncrement();
 	}
 
 	@Override
 	protected void initialize() {
 		subscribeEvent(FetchVehicle.class, (FetchVehicle message)->{
 			Future<DeliveryVehicle> toReturn = resource.acquireVehicle();
+			if(!toReturn.isDone()){
+			//	System.out.println("Adding to future pool");
+				waitingFuture.add(toReturn);
+			}
 			complete(message,toReturn);
 		});
 		subscribeEvent(ReleaseVehicle.class, (ReleaseVehicle message)->{
@@ -40,6 +50,16 @@ public class ResourceService extends MicroService{
 		});
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getDuration()==message.getTick()){
+				if(resourceCounter.get() == 1){
+				//	System.out.println(getName()+ " Deleting the waiting pool");
+					while(!waitingFuture.isEmpty()){
+						Future<DeliveryVehicle> temp = waitingFuture.poll();
+						if(!temp.isDone())
+							temp.resolve(null);
+					}
+
+				}
+				resourceCounter.decrementAndGet();
 				terminate();
 			}
 
