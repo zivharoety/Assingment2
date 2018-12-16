@@ -56,7 +56,7 @@ public class APIService extends MicroService{
 						BookOrderEvent order = new BookOrderEvent(myCustomer, toOrder.getFirst(), toOrder.getSecond(), orderId);
 						orderId++;
 						futureOrder = sendEvent(order);
-						System.out.println(getName() + " sent Event" + order.getBookName());
+					//	System.out.println(getName() + " sent Event" + order.getBookName());
 						if (futureOrder.get() != null) {
 							DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
 							sendEvent(deliveryEvent);

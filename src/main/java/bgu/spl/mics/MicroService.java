@@ -90,7 +90,7 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-        //System.out.println(getName()+" subscribed brodcast "+ type);
+      //  System.out.println(getName()+" subscribed brodcast "+ type);
         myCallback.put(type,callback);
         bus.subscribeBroadcast(type,this);
     }

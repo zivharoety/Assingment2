@@ -33,13 +33,11 @@ public class TimeService extends MicroService {
 
 	public TimeService(int speed, int duration, CountDownLatch countD) {
 		super("time");
-		//super.bus = MessageBusImpl.getInstance();
-		//bus = MessageBusImpl.getInstance();
 		this.countDown = countD;
 		this.duration = duration;
 		this.speed = speed;
 		this.currTick = 0;
-		this.stop = false;
+		//this.stop = false;
 		this.timer = new Timer();
 		this.timerTask = new TimerTask() {
 			@Override
@@ -49,13 +47,9 @@ public class TimeService extends MicroService {
 					sendBroadcast(new Tick(currTick, duration));
 					timerTask.cancel();
 					timer.cancel();
-					stop = true;
 					terminate();
-
-				//System.exit(88);
-
 				}
-				if (!stop) {
+				else{
 					sendBroadcast(new Tick(currTick, duration));
 					System.out.println("Tick number " + currTick + " is sent");
 				}
