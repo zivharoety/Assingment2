@@ -9,7 +9,6 @@ public class CheckAvailabilityEvent implements Event<Integer> , Serializable {
 
     public CheckAvailabilityEvent(String book){
         this.bookName=book;
-        //System.out.println("new CEA for "+book);
     }
 
     public String getBookName() {

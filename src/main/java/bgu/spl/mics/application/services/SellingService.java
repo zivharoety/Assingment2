@@ -38,26 +38,19 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		//System.out.println(getName()+" subscribing to Time broadcast");
 		subscribeBroadcast(Tick.class,(Tick message)->{
 			if(message.getTick()==message.getDuration()) {
-			//	System.out.println(getName()+" recieved last tick");
 				terminate();
 
 			}
 			currTick = message.getTick();
-		//	System.out.println(getName()+" recieved tick number "+message.getTick());
 		});
-		//System.out.println(getName()+" started running");
 		subscribeEvent(BookOrderEvent.class , (BookOrderEvent message)->{
-		//	System.out.println(getName() + "got a Book Order Event");
 			CheckAvailabilityEvent toCheck = new CheckAvailabilityEvent(message.getBookName());
 			futureAvailable = sendEvent(toCheck);
-		//	System.out.println(getName()+" sending future available");
 			boolean gotKey = false;
 			if(futureAvailable.get()!=null) {
 				if (futureAvailable.get() != -1) {
-				//	System.out.println(getName() + " service got an answer for future available");
 					while (!gotKey) {
 						try {
 							message.getCustomer().getSem().acquire();
@@ -69,10 +62,8 @@ public class SellingService extends MicroService{
 
 						TakeBookEvent toTake = new TakeBookEvent(message.getBookName());
 						futureIsTaken = sendEvent(toTake);
-					//	System.out.println(getName() + " sending future is taken");
 						if (futureIsTaken.get() != null) {
 							if (futureIsTaken.get() == OrderResult.SUCCESSFULLY_TAKEN) {
-				//				System.out.println(getName() + " service got an answer for future is taken");
 								OrderReceipt receipt = new OrderReceipt(message.getOrderId(), this.getName(), message.getCustomer().getId(), message.getBookName(),
 										message.getOrderTick(), currTick);
 								moneyRegister.chargeCreditCard(message.getCustomer(), futureAvailable.get());
@@ -80,28 +71,20 @@ public class SellingService extends MicroService{
 								receipt.setIssuedTick(currTick);
 								message.getCustomer().addOrder(receipt);
 								moneyRegister.file(receipt);
-					//			System.out.println(getName()+" printing recipt in time "+currTick);
 								complete(message, receipt);
 								message.getCustomer().getSem().release();
-						//		System.out.println(getName()+" realsing "+message.getCustomer().getName()+" money semaphore");
-						//			System.out.println("Completed purchase "+message.getBookName());
 							} else {
 								complete(message, null);
 								message.getCustomer().getSem().release();
-							//	System.out.println(getName()+" realsing "+message.getCustomer().getName()+" money semaphore");
 							}
 						} else {
 							complete(message, null);
 							message.getCustomer().getSem().release();
-							//System.out.println(getName()+" realsing "+message.getCustomer().getName()+" money semaphore");
 						}
 					} else {
 						complete(message, null);
 						message.getCustomer().getSem().release();
-					//	System.out.println(getName()+" realsing "+message.getCustomer().getName()+" money semaphore");
 					}
-				//	message.getCustomer().getSem().release();
-				//	System.out.println(getName()+" realsing "+message.getCustomer().getName()+" money semaphore");
 				} else {
 					complete(message, null);
 				}

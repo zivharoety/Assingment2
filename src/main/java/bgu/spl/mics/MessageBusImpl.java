@@ -13,13 +13,11 @@ import java.util.concurrent.*;
  */
 public class MessageBusImpl implements MessageBus {
     private ConcurrentHashMap<Event, Future> futureMap;
-    private ConcurrentHashMap<Class<? extends Event>, LinkedList> eventTypeQueue;//to implement RoundedQueue!!!
+    private ConcurrentHashMap<Class<? extends Event>, LinkedList> eventTypeQueue;
     private ConcurrentHashMap<MicroService, BlockingQueue<Message>> microQueue;
     private ConcurrentHashMap<Class<? extends Broadcast>, LinkedList<MicroService>> broadcastTypeList;
-    //private ConcurrentHashMap<Class<? extends Broadcast>, ConcurrentLinkedQueue<MicroService>> broadcastTypeList;
     private ConcurrentHashMap<MicroService, LinkedList<Class<? extends Event<?>>>> microRegisterEvent;
     private ConcurrentHashMap<MicroService, LinkedList<Class<? extends Broadcast>>> microRegisterBroad;
-    //private static MessageBusImpl instance = new MessageBusImpl();
 
 
     private MessageBusImpl() {
@@ -59,11 +57,9 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-        //  System.out.println(m.getName()+" is subscrobong to "+type);
         synchronized (broadcastTypeList) {
             if (broadcastTypeList.get(type) == null) {
                 broadcastTypeList.put(type, new LinkedList());
-                //     broadcastTypeList.put(type, new ConcurrentLinkedQueue<>());
             }
         }
         synchronized (broadcastTypeList.get(type)) {
@@ -76,52 +72,17 @@ public class MessageBusImpl implements MessageBus {
     @Override
     public <T> void complete(Event<T> e, T result) {
         futureMap.get(e).resolve(result);
-        //futureMap.remove(e);
-
     }
 
     @Override
     public void sendBroadcast(Broadcast b) {
-      //  synchronized (broadcastTypeList.get(b.getClass())) {
           final List<MicroService> taskList = new ArrayList<MicroService>(broadcastTypeList.get(b.getClass()));
             synchronized (taskList) {
                 for (MicroService m : taskList) {
                     microQueue.get(m).add(b);
                 }
             }
-    //    }
-
-        /*   synchronized ((broadcastTypeList.get(b.getClass()))) {
-            if (broadcastTypeList.get(b.getClass()) == null) {
-                System.out.println("return because null");
-                return;
-            }
-            for (MicroService m : broadcastTypeList.get(b.getClass())) {
-
-                //System.out.println(broadcastTypeList.get(b.getClass()).size());
-                for (int i = broadcastTypeList.get(b.getClass()).size() - 1; i > -1; i--) {   //MicroService m : broadcastTypeList.get(b.getClass())) {
-                    if (broadcastTypeList.get(b.getClass()) == null || broadcastTypeList.get(b.getClass()).size() == 0) {
-                        System.out.println("class is null");
-                    //    return;
-                    }
-                    if (broadcastTypeList.get(b.getClass()).get(i) == null) {
-                        System.out.println(m.getName()+ " Micro is null");
-                      //  return;
-                    }
-                    if (microQueue.get(broadcastTypeList.get(b.getClass()).get(i)) == null) {
-                        System.out.println("Micro Queue is null");
-                        //return;
-                    }
-                    try {
-                        microQueue.get(broadcastTypeList.get(b.getClass()).get(i)).put(b);
-                    } catch (InterruptedException ignored) {
-                        ///
-                    }
-                }
-            }
-
-        }*/
-}
+    }
 
 
     @Override
@@ -152,34 +113,6 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-        /* Future<T> toReturn = new Future<>();
-        futureMap.put(e, toReturn);// mapping the future to the event map
-        MicroService temp = null;
-        try {
-            synchronized (eventTypeQueue.get(e.getClass())) {
-                if(eventTypeQueue.get(e.getClass()) == null || eventTypeQueue.get(e.getClass()).isEmpty()){
-                    complete(e,null);
-                }
-                else {
-                        temp = (MicroService) eventTypeQueue.get(e.getClass()).removeFirst();
-                }
-            }
-                try {
-                    microQueue.get(temp).put(e);
-                } catch (InterruptedException ignored) {
-                    /// to understand what we need to do
-                }
-            //    catch (NullPointerException ignored){}
-
-            }
-         catch (NullPointerException exc) {
-            return null;
-        }
-    synchronized ((eventTypeQueue.get(e.getClass()))) {
-        eventTypeQueue.get(e.getClass()).addLast(temp);
-    }
-        return toReturn; */
-
 
     @Override
     public void register(MicroService m) {
@@ -189,10 +122,6 @@ public class MessageBusImpl implements MessageBus {
         microQueue.put(m, toAdd);
         microRegisterEvent.put(m, mySubEvent);
         microRegisterBroad.put(m,mySubBroad);
-
-
-        // we think it's done
-
     }
 
     @Override
@@ -226,7 +155,6 @@ public class MessageBusImpl implements MessageBus {
             try {
                 toReturn = microQueue.get(m).take();
             }  catch (InterruptedException inter) {
-                //wait();
                 inter.printStackTrace();
             }
 

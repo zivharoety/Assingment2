@@ -28,7 +28,6 @@ public class APIService extends MicroService{
 	private int orderId;
 	private CountDownLatch countDown;
 	private LinkedList<Pair> currOrder;
-	private  boolean toBrake;
 
 	public APIService(String name, Customer c, CountDownLatch countD){
 		super(name);
@@ -51,12 +50,10 @@ public class APIService extends MicroService{
 			if(orderSchedule.size() > 0) {
 				while (toRun && message.getTick() == orderSchedule.getFirst().getSecond()) {
 					int curr = message.getTick();
-				//	for (Pair toOrder : orderSchedule) {
 					Pair toOrder = orderSchedule.removeFirst();
 						BookOrderEvent order = new BookOrderEvent(myCustomer, toOrder.getFirst(), toOrder.getSecond(), orderId);
 						orderId++;
 						futureOrder = sendEvent(order);
-					//	System.out.println(getName() + " sent Event" + order.getBookName());
 						if (futureOrder.get() != null) {
 							DeliveryEvent deliveryEvent = new DeliveryEvent(myCustomer);
 							sendEvent(deliveryEvent);

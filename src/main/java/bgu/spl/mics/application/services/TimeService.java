@@ -27,7 +27,6 @@ public class TimeService extends MicroService {
 	private TimerTask timerTask;
 	private Timer timer;
 	private CountDownLatch countDown;
-	private boolean stop;
 
 	private int currTick;
 
@@ -37,7 +36,6 @@ public class TimeService extends MicroService {
 		this.duration = duration;
 		this.speed = speed;
 		this.currTick = 0;
-		//this.stop = false;
 		this.timer = new Timer();
 		this.timerTask = new TimerTask() {
 			@Override
@@ -51,7 +49,6 @@ public class TimeService extends MicroService {
 				}
 				else{
 					sendBroadcast(new Tick(currTick, duration));
-					System.out.println("Tick number " + currTick + " is sent");
 				}
 			}
 

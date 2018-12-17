@@ -87,8 +87,7 @@ public class Future<T> {
 		}
 		try {
 
-			wait(unit.convert(timeout,unit));//wait(timeout);
-			//to check how to implement
+			wait(unit.convert(timeout,unit));
 		} catch (InterruptedException e) {}
 		return val;
 	}

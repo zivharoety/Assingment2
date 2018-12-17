@@ -10,7 +10,6 @@ public class TakeBookEvent implements Event<OrderResult> , Serializable {
 
     public TakeBookEvent(String book){
         this.bookName=book;
-        //System.out.println("new Take book event for "+book);
     }
 
     public String getBookName() {

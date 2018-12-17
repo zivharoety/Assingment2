@@ -21,12 +21,12 @@ import java.util.concurrent.CountDownLatch;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LogisticsService extends MicroService {
-			private Future<DeliveryVehicle> future;
-			private CountDownLatch countDown;
+	private Future<DeliveryVehicle> future;
+	private CountDownLatch countDown;
+
 	public LogisticsService(String name, CountDownLatch countD) {
 		super(name);
 		countDown = countD;
-		// TODO Implement this
 	}
 
 	@Override

@@ -33,7 +33,6 @@ public class MoneyRegister implements Serializable {
 		private static MoneyRegister instance = new MoneyRegister();
 	}
 	public static MoneyRegister getInstance() {
-		//TODO: Implement this
 		return MoneyRegisterHolder.instance;
 	}
 	
@@ -52,7 +51,6 @@ public class MoneyRegister implements Serializable {
      * Retrieves the current total earnings of the store.  
      */
 	public int getTotalEarnings() {
-		//TODO: Implement this
 		return totalEarning.get();
 	}
 	
@@ -62,7 +60,6 @@ public class MoneyRegister implements Serializable {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
-		//System.out.println("Money Register: charging credit card "+c.getName()+" amount: "+amount);
 				totalEarning.addAndGet(amount);
 				c.reduceCredit(amount);
 	}
@@ -73,27 +70,18 @@ public class MoneyRegister implements Serializable {
      * This method is called by the main method in order to generate the output.. 
      */
 	public void printOrderReceipts(String filename) {
-		try {
-			FileOutputStream toPrint = new FileOutputStream(new File(filename));
-			ObjectOutputStream toWrite = new ObjectOutputStream(toPrint);
+		try (FileOutputStream toPrint = new FileOutputStream(new File(filename))) {
+			try(ObjectOutputStream toWrite = new ObjectOutputStream(toPrint)){
 			toWrite.writeObject(recipts);
-			//toWrite.flush();//to check if really necessary.
-			toWrite.close();
-
 		} catch (FileNotFoundException ignord) {
 
 		} catch (IOException ignord) {
 
 		}
-	}
-	//to delete
-	public OrderReceipt[] getRecipts(){
-		OrderReceipt[] toReturn = new OrderReceipt[recipts.size()];
-		int i = 0;
-		for(OrderReceipt r : recipts){
-			toReturn[i] = r;
-			i++;
+	} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return  toReturn;
 	}
 }

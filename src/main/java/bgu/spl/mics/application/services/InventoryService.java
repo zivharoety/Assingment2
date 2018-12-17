@@ -19,13 +19,13 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class InventoryService extends MicroService{
-		private Inventory inventory;
+	private Inventory inventory;
 	private CountDownLatch countDown;
+
 	public InventoryService(String name, CountDownLatch countD) {
 		super(name);
 		inventory = Inventory.getInstance();
 		countDown = countD;
-		// TODO Implement this
 	}
 
 	@Override

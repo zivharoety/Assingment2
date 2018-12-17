@@ -40,7 +40,6 @@ public class ResourceService extends MicroService{
 		subscribeEvent(FetchVehicle.class, (FetchVehicle message)->{
 			Future<DeliveryVehicle> toReturn = resource.acquireVehicle();
 			if(!toReturn.isDone()){
-			//	System.out.println("Adding to future pool");
 				waitingFuture.add(toReturn);
 			}
 			complete(message,toReturn);
@@ -51,7 +50,6 @@ public class ResourceService extends MicroService{
 		subscribeBroadcast(Tick.class , (Tick message)->{
 			if(message.getDuration()==message.getTick()){
 				if(resourceCounter.get() == 1){
-				//	System.out.println(getName()+ " Deleting the waiting pool");
 					while(!waitingFuture.isEmpty()){
 						Future<DeliveryVehicle> temp = waitingFuture.poll();
 						if(!temp.isDone())

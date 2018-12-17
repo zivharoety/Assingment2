@@ -20,7 +20,6 @@ public class BookInventoryInfo implements Serializable {
 		this.bookTitle=bookTitle;
 		this.price=price;
 		this.amount=amount;
-		//this.sem = new Semaphore(amount);
 	}
 
 	/**

@@ -10,7 +10,6 @@ public class DeliveryEvent implements Event , Serializable {
 
     public DeliveryEvent(Customer customer){
         this.customer = customer;
-        //System.out.println("new DE for "+customer.getName());
     }
 
     public Customer getCustomer() {

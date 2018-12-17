@@ -90,7 +90,6 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-      //  System.out.println(getName()+" subscribed brodcast "+ type);
         myCallback.put(type,callback);
         bus.subscribeBroadcast(type,this);
     }
@@ -119,7 +118,6 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-
         bus.sendBroadcast(b);
     }
 
@@ -134,7 +132,6 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-
         bus.complete(e,result);
     }
 
@@ -148,7 +145,6 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-
         this.terminated = true;
     }
 
@@ -181,7 +177,6 @@ public abstract class MicroService implements Runnable {
             }
         }
         bus.unregister(this);
-        System.out.println(getName()+ "is terminating");
     }
 
 
